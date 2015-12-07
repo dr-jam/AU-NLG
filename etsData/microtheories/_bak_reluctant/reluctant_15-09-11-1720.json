@@ -1,0 +1,304 @@
+{
+	"type": "reluctant",
+	"rules": [
+		{
+			"name": "If somebody's trustfulness is low, then they will be more likely to be reluctant.",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "trustfulness",
+					"first": "x",
+					"value": 33,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "reluctant.json",
+			"id": "reluctant_10"
+		},
+		{
+			"name": "If someone is interacting with an outsider, then they will be more likely to be reluctant.",
+			"conditions": [
+				{
+					"class": "status",
+					"type": "outsider",
+					"first": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_11"
+		},
+		{
+			"name": "If someone has positively met an outsider, then they are less likely to be reluctant.",
+			"conditions": [
+				{
+					"class": "status",
+					"type": "outsider",
+					"first": "y",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "met",
+					"first": "x",
+					"second": "y",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "positive",
+					"first": "y",
+					"second": "x",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": -3,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_12"
+		},
+		{
+			"name": "If someone has negatively met an outsider, then they are more likely to be reluctant.",
+			"conditions": [
+				{
+					"class": "status",
+					"type": "outsider",
+					"first": "y",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "met",
+					"first": "x",
+					"second": "y",
+					"value": true
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "negative",
+					"first": "y",
+					"second": "x",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 3,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_13"
+		},
+		{
+			"name": "You are more likely to be reluctable to somebody if a family member has low trust toward them.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "z",
+					"second": "y",
+					"value": 4,
+					"operator": "<"
+				},
+				{
+					"class": "status",
+					"type": "family",
+					"first": "x",
+					"value": true
+				},
+				{
+					"class": "status",
+					"type": "family",
+					"first": "z",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 1,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_14"
+		},
+		{
+			"name": "You are less likely to be reluctable to somebody if a family member has low trust toward them.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "z",
+					"second": "y",
+					"value": 6,
+					"operator": ">"
+				},
+				{
+					"class": "status",
+					"type": "family",
+					"first": "x",
+					"value": true
+				},
+				{
+					"class": "status",
+					"type": "family",
+					"first": "z",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": -1,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_15"
+		},
+		{
+			"name": "If you have low familiarity towards someone, you are more likely to be reluctant.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "familiarity",
+					"first": "x",
+					"second": "y",
+					"value": 4,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 1,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_16"
+		},
+		{
+			"name": "If you have high familiarity towars someone you are less likely to be reluctant towards them.",
+			"conditions": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"value": 6,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": -1,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_17"
+		},
+		{
+			"name": "People are more likely to be reluctant to somebody if their family members don't trust them.",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "z",
+					"second": "y",
+					"value": 5,
+					"operator": "<"
+				},
+				{
+					"class": "status",
+					"type": "family",
+					"first": "x",
+					"value": true
+				},
+				{
+					"class": "status",
+					"type": "family",
+					"first": "z",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 1,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_18"
+		}
+	]
+}

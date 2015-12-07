@@ -1,0 +1,35 @@
+{
+	"type": "deny",
+	"rules": [
+		{
+			"name": "People are more likely to deny someone something if that person has been rude",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "rude",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "deny",
+					"first": "x",
+					"second": "y",
+					"weight": 10,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "deny",
+			"origin": "deny.json",
+			"id": "deny_15"
+		}
+	]
+}

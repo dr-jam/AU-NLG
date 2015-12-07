@@ -1,0 +1,196 @@
+{
+	"type": "dismiss",
+	"rules": [
+		{
+			"name": "If the someone is negative and is neutral to a high status person, one's volition for dismiss is increased",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "negative",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "neutral",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "dismiss",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "dismiss.json",
+			"id": "dismiss_1"
+		},
+		{
+			"name": "No Greet and neutral for high status -> dismiss",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "met",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						20
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "neutral",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "dismiss",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "dismiss",
+			"origin": "dismiss.json",
+			"id": "dismiss_2"
+		},
+		{
+			"name": "If you negatively greet and respectfully requested to a low status person -> increase dismiss volition",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "negative",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "respectful",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "dismiss",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "dismiss",
+			"origin": "dismiss.json",
+			"id": "dismiss_3"
+		},
+		{
+			"name": "No greet + Respectful request for low status -> dismiss",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "met",
+					"first": "x",
+					"second": "y",
+					"value": false,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "respectful",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "dismiss",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "dismiss",
+			"origin": "dismiss.json",
+			"id": "dismiss_4"
+		}
+	]
+}

@@ -1,0 +1,48 @@
+{
+	"emotes": {
+		"neutral": {
+			"eyes": "e",
+			"mouth": "b"
+		},
+		"confused": {
+			"eyes": "b",
+			"mouth": "a"
+		},
+		"surprised": {
+			"eyes": "a",
+			"mouth": "c"
+		},
+		"kind": {
+			"eyes": "c",
+			"mouth": "b"
+		},
+		"laughing": {
+		  "eyes": "g",
+			"mouth": "f"
+		},
+		"annoyed": {
+		  "eyes": "e",
+			"mouth": "d"
+		},
+		"offended": {
+		  "eyes": "b",
+			"mouth": "d"
+		},
+		"angry": {
+			"eyes": "d",
+			"mouth": "g"
+		},
+		"sad": {
+			"eyes": "i",
+			"mouth": "d"
+		},
+		"bored": {
+			"eyes": "h",
+			"mouth": "e"
+		},
+		"mischievous": {
+			"eyes": "d",
+			"mouth": "a"
+		}
+	}
+}

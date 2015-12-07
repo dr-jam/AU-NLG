@@ -1,0 +1,85 @@
+{
+	"cast": {
+		"player": {
+			"name": "You",
+			"profession":"none",
+			"graphics": {
+			}
+		},
+		"Cogsworth": {
+			"name": "Cogsworth",
+			"profession": "Robot",
+			"graphics": {
+				"icon": "cog"
+			}
+		},
+		"Clayton": {
+			"name": "Clayton",
+			"profession": "Farmer",
+			"graphics": {
+				"icon": "farmer",
+				"body": "f",
+				"head": "o",
+				"hair": "b",
+				"nose": "c",
+				"eyes": "a",
+				"mouth": "d"
+			},
+			"specialWords": {
+				"nice":"awesome"
+			}
+		},
+		"Brim": {
+			"name": "Brim",
+			"profession": "Nanosmith",
+			"graphics": {
+				"icon": "female3",
+				"body": "c",
+				"head": "e",
+				"hair": "k",
+				"nose": "a",
+				"eyes": "b",
+				"mouth": "c"
+			}
+		},
+		"Emma": {
+			"name": "Emma",
+		  "profession": "Sheriff",
+			"graphics": {
+				"icon": "female1",
+				"body": "b",
+				"head": "g",
+				"hair": "n",
+				"nose": "c",
+				"eyes": "d",
+				"mouth": "a"
+			}
+		},
+		"Mick": {
+			"name": "Mick",
+		  "profession": "Pilot",
+			"graphics": {
+				"icon": "male1",
+				"body": "d",
+				"head": "l",
+				"hair": "d",
+				"nose": "a",
+				"eyes": "c",
+				"mouth": "e"
+			}
+		},
+		"Belle": {
+			"name": "Belle",
+		  "profession": "Mayor",
+			"graphics": {
+				"icon": "female2",
+				"body": "a",
+				"head": "b",
+				"hair": "j",
+				"nose": "b",
+				"eyes": "b",
+				"mouth": "a"
+			}
+		}
+	}
+}

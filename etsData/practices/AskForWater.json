@@ -1,0 +1,369 @@
+{
+	"practice": {
+		"label": "Ask for Water",
+		"entryStage": {
+			"eventStage": false,
+			"label": "Enter",
+			"nextStages": [
+				"Greet",
+				"Request"
+			],
+			"preconditions": [],
+			"actions": []
+		},
+		"stages": [
+			{
+				"label": "Greet",
+				"eventStage": false,
+				"nextStages": [
+					"Positive Greet Response",
+					"Negative Greet Response"
+				],
+				"actions": [
+					{
+						"label": "Hello honorable villager.",
+						"intent": "hospitable",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "formal",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='kind'/>\n<line s='%X%'>Hello honorable villager.</line>"
+					},
+					{
+						"label": "Hi.",
+						"intent": "indifferent",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "informal",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='neutral'/>\n<line s='%X%'>Hi.</line>"
+					}
+				],
+				"entryStage": true
+			},
+			{
+				"label": "Negative Greet Response",
+				"eventStage": false,
+				"nextStages": [
+					"Request"
+				],
+				"actions": [
+					{
+						"label": "Subtle Frown",
+						"intent": "reluctant",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "met",
+								"first": "x",
+								"second": "y",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "met",
+								"first": "y",
+								"second": "x",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "negative",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='annoyed'/>\n<line s='%X%'>...</line>"
+					},
+					{
+						"label": "Greet Correction",
+						"intent": "helpful",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "met",
+								"first": "x",
+								"second": "y",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "met",
+								"first": "y",
+								"second": "x",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "negative",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='surprised'/>\n<line s='%X%'>I'd prefer that you greeted me less formally</line>"
+					}
+				],
+				"entryStage": false
+			},
+			{
+				"label": "Positive Greet Response",
+				"eventStage": false,
+				"nextStages": [
+					"Request"
+				],
+				"actions": [
+					{
+						"label": "Nice Greet Reply",
+						"intent": "hospitable",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "met",
+								"first": "x",
+								"second": "y",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "met",
+								"first": "y",
+								"second": "x",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "positive",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='kind'/>\n<line s='%X%'>Why hello there, stranger.</line>"
+					}
+				]
+			},
+			{
+				"label": "Request",
+				"eventStage": false,
+				"nextStages": [
+					"Give info",
+					"Don't give info"
+				],
+				"actions": [
+					{
+						"label": "Would you tell me where I can find water?",
+						"intent": "indifferent",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "neutral",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='neutral'/>\n<line s='%X%'>Would you tell me where I can find water?</line>"
+					},
+					{
+						"label": "Where is the water? Don't hold out on me.",
+						"intent": "dominance",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "rude",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='annoyed'/>\n<line s='%X%'>Where is the water? Don't hold out on me.</line>"
+					},
+					{
+						"label": "Honorable villager, could you please tell me where the water is?",
+						"intent": "hospitable",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "SFDBLabel",
+								"type": "respectful",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='kind'/>\n<line s='%X%'>Honorable villager, could you please tell me where the water is?</line>"
+					}
+				],
+				"entryStage": true
+			},
+			{
+				"label": "Don't give info",
+				"eventStage": false,
+				"nextStages": [],
+				"actions": [
+					{
+						"label": "Don't know",
+						"intent": "dismiss",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "network",
+								"type": "trust",
+								"first": "x",
+								"second": "y",
+								"value": 1,
+								"operator": "-"
+							},
+							{
+								"class": "network",
+								"type": "trust",
+								"first": "y",
+								"second": "x",
+								"value": 1,
+								"operator": "-"
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "negative",
+								"first": "x",
+								"second": "y",
+								"value": true
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "negative",
+								"first": "y",
+								"second": "x",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='neutral'/>\n<line s='%X%'>I don’t know.</line>"
+					},
+					{
+						"label": "Scowl",
+						"intent": "deny",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "mood",
+								"type": "offended",
+								"first": "x",
+								"value": true
+							},
+							{
+								"class": "network",
+								"type": "trust",
+								"first": "x",
+								"second": "y",
+								"value": 2,
+								"operator": "-"
+							}
+						],
+						"performance": "<emote character='%X%' emotion='annoyed'/>\n<line s='%X%'>...</line>"
+					}
+				]
+			},
+			{
+				"label": "Give info",
+				"eventStage": false,
+				"nextStages": [],
+				"actions": [
+					{
+						"label": "Give the info",
+						"intent": "helpful",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [
+							{
+								"class": "network",
+								"type": "trust",
+								"first": "x",
+								"second": "y",
+								"value": 1,
+								"operator": "+"
+							},
+							{
+								"class": "network",
+								"type": "trust",
+								"first": "y",
+								"second": "x",
+								"value": 1,
+								"operator": "+"
+							},
+							{
+								"class": "SFDBLabel",
+								"type": "positive",
+								"first": "x",
+								"second": "y",
+								"value": true
+							}
+						],
+						"performance": "<emote character='%X%' emotion='kind'/>\n<line s='%X%'>The water is over there.</line>"
+					},
+					{
+						"label": "Reluctantly give info",
+						"intent": "reluctant",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [],
+						"performance": "<emote character='%X%' emotion='neutral'/>\n<line s='%X%'>Hmmmmm... the water is over there...</line>"
+					}
+				]
+			}
+		],
+		"eventStages": []
+	}
+}

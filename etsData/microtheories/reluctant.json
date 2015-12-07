@@ -1,0 +1,330 @@
+{
+	"type": "reluctant",
+	"rules": [
+		{
+			"name": "High status person has more likely to be reluctant if they are treated informally",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "informal",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						1
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_12"
+		},
+		{
+			"name": "If someone is positive and neutral to a high status person then other increases volition for reluctance",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "positive",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "neutral",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_13"
+		},
+		{
+			"name": "High Status person: Negative + Respectful Request -> inceased reluctant volition",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "negative",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "respectful",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_14"
+		},
+		{
+			"name": "No greet + respectful request for high status--> increased reluctant volition",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "met",
+					"first": "y",
+					"second": "x",
+					"value": false,
+					"turnsAgoBetween": [
+						0,
+						100
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "respectful",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_15"
+		},
+		{
+			"name": "No Greet + neutral request for a low status person -> reluctant volition increased",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "met",
+					"first": "x",
+					"second": "y",
+					"value": false,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "neutral",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_16"
+		},
+		{
+			"name": "Positive and respectful request to a low status person -> increased reluctant volition",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "positive",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "respectful",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_17"
+		},
+		{
+			"name": "Negative and neutral request to a low status person -> increased reluctant volition",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "negative",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "neutral",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "reluctant",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "reluctant",
+			"origin": "reluctant.json",
+			"id": "reluctant_18"
+		}
+	]
+}

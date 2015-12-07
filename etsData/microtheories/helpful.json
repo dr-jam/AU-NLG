@@ -1,0 +1,144 @@
+{
+	"type": "helpful",
+	"rules": [
+		{
+			"name": "Lower status people are more likely to be helpful if they were treated too formally by an outsider",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "formal",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "status",
+					"type": "outsider",
+					"first": "y",
+					"value": true
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "helpful",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "helpful",
+			"origin": "helpful.json",
+			"id": "helpful_3"
+		},
+		{
+			"name": "High status people are more likely to be helpful if you recently were respectful and positive",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "respectful",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "positive",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "helpful",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "helpful",
+			"origin": "helpful.json",
+			"id": "helpful_4"
+		},
+		{
+			"name": "Lower Status people are more likely to be helpful when you were positive and made a neutral request",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "positive",
+					"first": "x",
+					"second": "y",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "neutral",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "helpful",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "helpful",
+			"origin": "helpful.json",
+			"id": "helpful_5"
+		}
+	]
+}

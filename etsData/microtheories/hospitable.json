@@ -1,0 +1,75 @@
+{
+	"type": "hospitable",
+	"rules": [
+		{
+			"name": "Low status person is more likely to be hospitable if treated informally",
+			"conditions": [
+				{
+					"class": "SFDBLabel",
+					"type": "informal",
+					"first": "y",
+					"second": "x",
+					"value": true
+				},
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 51,
+					"operator": "<"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "hospitable",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "hospitable",
+			"origin": "hospitable.json",
+			"id": "hospitable_5"
+		},
+		{
+			"name": "A high status person is more hospitable if the other person is formal",
+			"conditions": [
+				{
+					"class": "attribute",
+					"type": "status-individual",
+					"first": "x",
+					"value": 50,
+					"operator": ">"
+				},
+				{
+					"class": "SFDBLabel",
+					"type": "formal",
+					"first": "y",
+					"second": "x",
+					"value": true,
+					"turnsAgoBetween": [
+						0,
+						2
+					]
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "hospitable",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "hospitable",
+			"origin": "hospitable.json",
+			"id": "hospitable_6"
+		}
+	]
+}

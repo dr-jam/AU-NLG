@@ -1,0 +1,57 @@
+{
+	"type": "helpful",
+	"rules": [
+		{
+			"name": "New Helpful Rule",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"value": 5,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "helpful",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "helpful.json",
+			"id": "helpful_5"
+		},
+		{
+			"name": "New Helpful Rule",
+			"conditions": [
+				{
+					"class": "intents",
+					"type": "helpful",
+					"first": "x",
+					"second": "y",
+					"value": 0
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "helpful",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"type": "helpful",
+			"origin": "helpful.json",
+			"id": "helpful_12"
+		}
+	]
+}

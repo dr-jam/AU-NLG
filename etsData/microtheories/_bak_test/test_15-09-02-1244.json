@@ -1,0 +1,32 @@
+{
+	"type": "test",
+	"rules": [
+		{
+			"name": "New test Rule",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"value": 5,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "test",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "test.json",
+			"id": "test_1"
+		}
+	],
+	"source_file": "/Users/anne/Dropbox (Personal)/extended-game/social-practice-src/test/etsData/microtheories/test.json"
+}

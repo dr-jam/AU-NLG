@@ -1,0 +1,105 @@
+{
+	"schema": [
+		{
+			"class": "network",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": [
+				"trust",
+				"friendship",
+				"familiarity"
+			],
+			"defaultValue": 5,
+			"minValue": 0,
+			"maxValue": 10,
+			"allowIntent": false
+		},
+		{
+			"class": "status",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": [
+				"outsider",
+				"male",
+				"female",
+				"family"
+			],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "mood",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": [
+				"offended"
+			],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "knowledge",
+			"isBoolean": true,
+			"directionType": "undirected",
+			"types": [
+				"where the water is"
+			],
+			"defaultValue": false,
+			"allowIntent": false
+		},
+		{
+			"class": "attribute",
+			"types": [
+				"age",
+				"trustfulness",
+				"status-individual"
+			],
+			"isBoolean": false,
+			"directionType": "undirected",
+			"defaultValue": 20,
+			"maxValue": 100,
+			"minValue": 0,
+			"allowIntent": false
+		},
+		{
+			"class": "SFDBLabel",
+			"types": [
+				"met",
+				"positive",
+				"neutral",
+				"negative",
+				"rude",
+				"family reference",
+				"respectful",
+				"informal",
+				"formal"
+			],
+			"isBoolean": true,
+			"directionType": "directed",
+			"defaultValue": false,
+			"allowIntent": false,
+			"duration" : 0
+		},
+		{
+			"class": "intents",
+			"isBoolean": false,
+			"directionType": "directed",
+			"types": [
+				"deceive",
+				"dismiss",
+				"helpful",
+				"reluctant",
+				"indifferent",
+				"deny",
+				"hospitable",
+				"dominance",
+				"dismiss"
+			],
+			"defaultValue": 0,
+			"minValue": -10,
+			"maxValue": 10,
+			"allowIntent": true
+		}
+	],
+	"source_file": "C:\\Users\\mbauer\\Documents\\ExtendedGamePrototype\\release-v402\\social-practice-src\\test\\etsData\\schema.json"
+}

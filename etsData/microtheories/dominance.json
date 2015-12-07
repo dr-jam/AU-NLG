@@ -1,0 +1,31 @@
+{
+	"type": "dominance",
+	"rules": [
+		{
+			"name": "New Dominance Rule",
+			"conditions": [
+				{
+					"class": "network",
+					"type": "trust",
+					"first": "x",
+					"second": "y",
+					"value": 5,
+					"operator": ">"
+				}
+			],
+			"effects": [
+				{
+					"class": "intents",
+					"type": "dominance",
+					"first": "x",
+					"second": "y",
+					"weight": 5,
+					"intentDirection": true,
+					"value": true
+				}
+			],
+			"origin": "dominance.json",
+			"id": "dominance_3"
+		}
+	]
+}

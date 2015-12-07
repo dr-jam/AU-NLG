@@ -1,0 +1,54 @@
+{
+	"practice": {
+		"label": "Leave",
+		"entryStage": {
+			"eventStage": false,
+			"label": "Enter",
+			"nextStages": [
+				"Leave"
+			],
+			"preconditions": [],
+			"actions": []
+		},
+		"stages": [
+			{
+				"label": "Leave",
+				"eventStage": false,
+				"nextStages": [
+					"Leave Response"
+				],
+				"actions": [
+					{
+						"label": "Say Goodbye",
+						"intent": "indifferent",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [],
+						"performance": "<emote character='%X%' emotion='neutral'/>\n<line s='%X%'>Goodbye!</line>"
+					}
+				],
+				"entryStage": true
+			},
+			{
+				"label": "Leave Response",
+				"eventStage": false,
+				"nextStages": [],
+				"actions": [
+					{
+						"label": "Goodbye Response",
+						"intent": "indifferent",
+						"defaultWeight": 0,
+						"preconditions": [],
+						"carryRules": [],
+						"nowRules": [],
+						"effects": [],
+						"performance": "<emote character='%X%' emotion='neutral'/>\n<line s='%X%'>Bye, then.</line>\n"
+					}
+				]
+			}
+		],
+		"eventStages": []
+	}
+}
