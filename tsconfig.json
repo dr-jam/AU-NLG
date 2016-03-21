@@ -24,5 +24,8 @@
         "LocutionTester.ts",
         "typings/cif/CiF.d.ts",
         "typings/requirejs/require.d.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

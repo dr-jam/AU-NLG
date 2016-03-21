@@ -1,18 +1,37 @@
-define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUNLG, cif) {
+define(["require", "exports", './AUNLG'], function (require, exports, AUNLG) {
+    "use strict";
     function test() {
-        var TEST_STR = "This is an example of %RANDOM(Cats,Dogs)%";
+        var testSting = "That's so %specialized(x, badass)%!";
+        var testSting = "This is %random(wicked, wretched, awesome)%!";
         var LOCUTION_STRINGS = ["RANDOM"];
-        var locutions = AUNLG.preprocess_string(TEST_STR);
+        var testBinding = {
+            "x": "Clayton"
+        };
+        var locutions = AUNLG.preprocessDialogue(testSting, testBinding);
         var i;
         for (i = 0; i < locutions.length; i++) {
-            console.log(locutions[i].render_text());
+            console.log(locutions[i].renderText());
         }
-        var loadResult = cif.init();
-        var rawSchema = cif.loadFile("etsData/schema.json");
-        var schema = cif.loadSocialStructure(rawSchema);
-        var rawCast = cif.loadFile("etsData/cast.json");
-        var cast = cif.addCharacters(rawCast);
-        console.log(cif.getCharacters());
+        var testCastMember = {
+            "Clayton": {
+                "name": "Clayton",
+                "profession": "Farmer",
+                "graphics": {
+                    "icon": "farmer",
+                    "body": "f",
+                    "head": "o",
+                    "hair": "b",
+                    "nose": "c",
+                    "eyes": "a",
+                    "mouth": "d"
+                },
+                "specialWords": {
+                    "nice": "awesome",
+                    "badass": "sparkplug"
+                },
+                "pronoun": "he"
+            }
+        };
     }
     exports.test = test;
 });
