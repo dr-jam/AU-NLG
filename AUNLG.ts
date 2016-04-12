@@ -20,13 +20,13 @@
                 function parseLocutionData.
             - Removed export statements from private functions and classes.
 */
-
+import cif = require('cif');
 module AUNLG {
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
 
     export interface Locution {
         text:string;  // The text of a Locution object
-        renderText():string;
+        renderText(speaker:string, bindings:any):string;
     }
 
 
@@ -37,7 +37,7 @@ module AUNLG {
             this.text = pRawString;
         }
 
-        renderText() {
+        renderText(speaker:string, bindings:any) {
             return this.text;
         }
     }
@@ -63,7 +63,7 @@ module AUNLG {
             return this.choices[randomNumber];
         }
 
-        renderText() {
+        renderText(speaker:string, bindings:any) {
             return this.makeChoice();
         }
     }
@@ -72,14 +72,20 @@ module AUNLG {
     class SpecializedLocution implements Locution {
         text:string = "";   // The string value for this locution.
         bindings:Object;    // Hold the bindings for this locution.
-
-        constructor(pToken:string, pBindings:Object) {
-            // TODO:  Finish this.
-            console.log(parseLocutionData(pToken, dataDelimiter));
+        specializedWord:string;
+        constructor(pToken:string) {
+            // By convention, this locution only has one argument, and that is
+            // the type of specialized word to look up in the cast.
+            // %specialized(greeting)%
+            this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
         }
 
-        renderText() {
-            return this.text;
+        renderText(speakerRole:string, bindings:any) {
+            var cast:any = cif.getCharacters();
+            var speakerName:string = bindings[speakerRole];
+            var speaker:any = cast[speakerName];
+            var speakersSpecializedWord = speaker.specialWords[this.specializedWord];
+            return speakersSpecializedWord;
         }
     }
 
@@ -173,7 +179,7 @@ module AUNLG {
      * @param  {type} pBindings - Bindings that are associated with the dialogue.
      * @return {Array} locutionList - The dialogue as an array of locutions.
      */
-    export function preprocessDialogue(pRawDialogue:string, pBindings:Object):Array<Locution> {
+    export function preprocessDialogue(pRawDialogue:string):Array<Locution> {
         var SYM:string = "%";                // The delimeter for locutions.
         var token:string = "";               // Holds a locution's contents.
         enum LocType { LITERAL, NONLITERAL } // Locution type currently being processed.
@@ -194,7 +200,7 @@ module AUNLG {
                 return new RandomLocution(trimType(pToken, "random"));
             // Or are we creating a SpecializedLocution?
             } else if (pToken.toLowerCase().indexOf("specialized") == 0) {
-                return new SpecializedLocution(trimType(pToken, "specialized"), pBindings);
+                return new SpecializedLocution(trimType(pToken, "specialized"));
             // Otherwise, we don't know what kind of locution to create.
             } else {
                 console.log("Unknown locution type: %s", pToken);

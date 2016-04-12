@@ -4,6 +4,9 @@
 			"name": "You",
 			"profession":"none",
 			"graphics": {
+			},
+			"specialWords": {
+				"nice":"whoa!"
 			}
 		},
 		"Cogsworth": {
@@ -11,6 +14,9 @@
 			"profession": "Robot",
 			"graphics": {
 				"icon": "cog"
+			},
+			"specialWords": {
+				"nice":"!?!?!?!"
 			}
 		},
 		"Clayton": {
@@ -40,6 +46,9 @@
 				"nose": "a",
 				"eyes": "b",
 				"mouth": "c"
+			},
+			"specialWords": {
+				"nice":"Gro0o0o0ovy"
 			}
 		},
 		"Emma": {
@@ -53,6 +62,9 @@
 				"nose": "c",
 				"eyes": "d",
 				"mouth": "a"
+			},
+			"specialWords": {
+				"nice":"brotastic"
 			}
 		},
 		"Mick": {
@@ -66,6 +78,9 @@
 				"nose": "a",
 				"eyes": "c",
 				"mouth": "e"
+			},
+			"specialWords": {
+				"nice":"space suit"
 			}
 		},
 		"Belle": {
@@ -79,6 +94,9 @@
 				"nose": "b",
 				"eyes": "b",
 				"mouth": "a"
+			},
+			"specialWords": {
+				"nice":"NLG rox"
 			}
 		}
 	}

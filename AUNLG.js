@@ -1,4 +1,4 @@
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", 'cif'], function (require, exports, cif) {
     "use strict";
     var AUNLG;
     (function (AUNLG) {
@@ -8,11 +8,11 @@ define(["require", "exports"], function (require, exports) {
                 this.text = "";
                 this.text = pRawString;
             }
-            LiteralLocution.prototype.renderText = function () {
+            LiteralLocution.prototype.renderText = function (speaker, bindings) {
                 return this.text;
             };
             return LiteralLocution;
-        }());
+        })();
         var RandomLocution = (function () {
             function RandomLocution(pRawString) {
                 this.choices = [];
@@ -28,21 +28,25 @@ define(["require", "exports"], function (require, exports) {
                 var randomNumber = Math.floor(Math.random() * this.choices.length);
                 return this.choices[randomNumber];
             };
-            RandomLocution.prototype.renderText = function () {
+            RandomLocution.prototype.renderText = function (speaker, bindings) {
                 return this.makeChoice();
             };
             return RandomLocution;
-        }());
+        })();
         var SpecializedLocution = (function () {
-            function SpecializedLocution(pToken, pBindings) {
+            function SpecializedLocution(pToken) {
                 this.text = "";
-                console.log(parseLocutionData(pToken, dataDelimiter));
+                this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
             }
-            SpecializedLocution.prototype.renderText = function () {
-                return this.text;
+            SpecializedLocution.prototype.renderText = function (speakerRole, bindings) {
+                var cast = cif.getCharacters();
+                var speakerName = bindings[speakerRole];
+                var speaker = cast[speakerName];
+                var speakersSpecializedWord = speaker.specialWords[this.specializedWord];
+                return speakersSpecializedWord;
             };
             return SpecializedLocution;
-        }());
+        })();
         function parseLocutionData(pRawData, pDelim) {
             var dataValue = "";
             var singleQuote = "'";
@@ -86,7 +90,7 @@ define(["require", "exports"], function (require, exports) {
             }
             return allValues;
         }
-        function preprocessDialogue(pRawDialogue, pBindings) {
+        function preprocessDialogue(pRawDialogue) {
             var SYM = "%";
             var token = "";
             var LocType;
@@ -104,7 +108,7 @@ define(["require", "exports"], function (require, exports) {
                     return new RandomLocution(trimType(pToken, "random"));
                 }
                 else if (pToken.toLowerCase().indexOf("specialized") == 0) {
-                    return new SpecializedLocution(trimType(pToken, "specialized"), pBindings);
+                    return new SpecializedLocution(trimType(pToken, "specialized"));
                 }
                 else {
                     console.log("Unknown locution type: %s", pToken);
