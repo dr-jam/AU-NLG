@@ -81,7 +81,7 @@ module AUNLG {
         }
 
         renderText(speakerRole:string, bindings:any) {
-            var cast:any = cif.getCharacters();
+            var cast:any = cif.getCharactersWithMetadata();
             var speakerName:string = bindings[speakerRole];
             var speaker:any = cast[speakerName];
             var speakersSpecializedWord = speaker.specialWords[this.specializedWord];

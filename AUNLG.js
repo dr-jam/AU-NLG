@@ -39,7 +39,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
             }
             SpecializedLocution.prototype.renderText = function (speakerRole, bindings) {
-                var cast = cif.getCharacters();
+                var cast = cif.getCharactersWithMetadata();
                 var speakerName = bindings[speakerRole];
                 var speaker = cast[speakerName];
                 var speakersSpecializedWord = speaker.specialWords[this.specializedWord];
