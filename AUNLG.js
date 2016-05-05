@@ -12,18 +12,37 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return this.text;
             };
             return LiteralLocution;
-        })();
+        }());
+        var GenderedLocution = (function () {
+            function GenderedLocution(pRawString) {
+                this.text = "";
+                this.maleChoice = "";
+                this.femaleChoice = "";
+                this.nonBinaryChoice = "";
+                this.text = pRawString;
+                var rawChoices = parseLocutionData(pRawString, dataDelimiter)[0];
+                var splitChoices = rawChoices.split("/");
+                this.maleChoice = splitChoices[0];
+                this.femaleChoice = splitChoices[1];
+                this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
+            }
+            GenderedLocution.prototype.renderText = function (speakerRole, bindings) {
+                var cast = cif.getCharactersWithMetadata();
+                var speakerName = bindings[speakerRole];
+                var speaker = cast[speakerName];
+                return speaker.preferredGender === "male" ?
+                    this.maleChoice : speaker.preferredGender === "female" ?
+                    this.femaleChoice : this.nonBinaryChoice;
+            };
+            return GenderedLocution;
+        }());
         var RandomLocution = (function () {
             function RandomLocution(pRawString) {
                 this.choices = [];
                 this.text = "";
                 this.text = pRawString;
-                this.extractChoices(pRawString);
+                this.choices = parseLocutionData(pRawString, dataDelimiter);
             }
-            RandomLocution.prototype.extractChoices = function (pRawChoices) {
-                console.log(pRawChoices);
-                this.choices = parseLocutionData(pRawChoices, dataDelimiter);
-            };
             RandomLocution.prototype.makeChoice = function () {
                 var randomNumber = Math.floor(Math.random() * this.choices.length);
                 return this.choices[randomNumber];
@@ -32,7 +51,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return this.makeChoice();
             };
             return RandomLocution;
-        })();
+        }());
         var SpecializedLocution = (function () {
             function SpecializedLocution(pToken) {
                 this.text = "";
@@ -46,7 +65,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return speakersSpecializedWord;
             };
             return SpecializedLocution;
-        })();
+        }());
         function parseLocutionData(pRawData, pDelim) {
             var dataValue = "";
             var singleQuote = "'";
@@ -104,11 +123,14 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 function trimType(pSource, pTypeString) {
                     return pSource.slice(pTypeString.length, pSource.length);
                 }
-                if (pToken.toLowerCase().indexOf("random") == 0) {
+                if (pToken.toLowerCase().indexOf("random") === 0) {
                     return new RandomLocution(trimType(pToken, "random"));
                 }
-                else if (pToken.toLowerCase().indexOf("specialized") == 0) {
+                else if (pToken.toLowerCase().indexOf("specialized") === 0) {
                     return new SpecializedLocution(trimType(pToken, "specialized"));
+                }
+                else if (pToken.toLowerCase().indexOf("gendered") === 0) {
+                    return new GenderedLocution(trimType(pToken, "gendered"));
                 }
                 else {
                     console.log("Unknown locution type: %s", pToken);

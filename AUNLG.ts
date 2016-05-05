@@ -1,24 +1,6 @@
 /*
     REFERENCE:
     https://docs.google.com/document/d/1KENUACiVzmgbTrSJJeyzYoyn7CeUvEMKNP4KCseI9j8/edit?usp=sharing
-
-    Change Log
-        02/16/2016 - Best Practices Audit
-            - Changed all 'ILocution' to 'Locution'.
-            - Changed all 'null' to 'undefined'.
-            - Began using JSdoc style comments.
-            - Revised function and variable names to camelCase.
-        02/17/2016
-            - Added parseLocutionData function.  This enabled the use of
-                space characters within locution data, both for readability
-                and for inclusion in the actual data values (see Notes to
-                Authors #2).
-            - Added the prefix 'p' to all parameter names for
-                enhanced readability.
-            - Added more detailed comments in utility functions.
-            - Updated what occurs when the single quote is encountered in
-                function parseLocutionData.
-            - Removed export statements from private functions and classes.
 */
 import cif = require('cif');
 module AUNLG {
@@ -28,7 +10,6 @@ module AUNLG {
         text:string;  // The text of a Locution object
         renderText(speaker:string, bindings:any):string;
     }
-
 
     class LiteralLocution implements Locution {
         text: string = "";
@@ -43,18 +24,42 @@ module AUNLG {
     }
 
 
+    class GenderedLocution implements Locution {
+        text:string = "";
+        maleChoice:string = "";
+        femaleChoice:string = "";
+        nonBinaryChoice:string = "";
+
+        constructor(pRawString:string) {
+            this.text = pRawString;
+            // By convention, there is only one element in a gendered locution data array.
+            var rawChoices:string = parseLocutionData(pRawString, dataDelimiter)[0];
+            var splitChoices:Array<string> = rawChoices.split("/");
+            // The male choice should always be listed first.
+            this.maleChoice = splitChoices[0];
+            this.femaleChoice = splitChoices[1];
+            this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
+        }
+
+        renderText(speakerRole:string, bindings:any) {
+            var cast:any = cif.getCharactersWithMetadata();
+            var speakerName:string = bindings[speakerRole];
+            var speaker:any = cast[speakerName];
+            // Return the choice based on the preferredGender of speakerRole.
+            return speaker.preferredGender === "male" ?
+                this.maleChoice : speaker.preferredGender === "female" ?
+                this.femaleChoice : this.nonBinaryChoice;
+        }
+    }
+
+
     class RandomLocution implements Locution {
         choices:Array<string> = [];       // Parsed choices as string values.
         text:string = "";                 // This instance's string value.
 
         constructor(pRawString:string) {
             this.text = pRawString;
-            this.extractChoices(pRawString);
-        }
-
-        extractChoices(pRawChoices:string):void {
-            console.log(pRawChoices);
-            this.choices = parseLocutionData(pRawChoices, dataDelimiter);
+            this.choices = parseLocutionData(pRawString, dataDelimiter);
         }
 
         makeChoice():string {
@@ -189,22 +194,21 @@ module AUNLG {
 
         // Helper function to create a nonliteral locution.
         function createLocution(pToken:string): AUNLG.Locution {
-
-            // Helper function that returns a string with Locution type trimmed.
+            // Helper function that returns a string with Locution type string trimmed.
             function trimType(pSource:string, pTypeString:string):string {
                 return pSource.slice(pTypeString.length, pSource.length);
             }
 
-            // Are we creating a RandomLocution?
-            if (pToken.toLowerCase().indexOf("random") == 0) {
+            // Find out which Locution type we are making.
+            if (pToken.toLowerCase().indexOf("random") === 0) {
                 return new RandomLocution(trimType(pToken, "random"));
-            // Or are we creating a SpecializedLocution?
-            } else if (pToken.toLowerCase().indexOf("specialized") == 0) {
+            } else if (pToken.toLowerCase().indexOf("specialized") === 0) {
                 return new SpecializedLocution(trimType(pToken, "specialized"));
-            // Otherwise, we don't know what kind of locution to create.
+            } else if (pToken.toLowerCase().indexOf("gendered") === 0) {
+                return new GenderedLocution(trimType(pToken, "gendered"));
             } else {
                 console.log("Unknown locution type: %s", pToken);
-                return undefined;    // Undefined is BP, do not use null.
+                return undefined;
             }
         }
 
