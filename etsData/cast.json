@@ -33,7 +33,8 @@
 			},
 			"specialWords": {
 				"nice":"awesome"
-			}
+			},
+            "preferredGender": "non-binary"
 		},
 		"Brim": {
 			"name": "Brim",
