@@ -28,21 +28,6 @@ export function test(): void {
 }
 
 
-/**
- * getPreprocessedDialogue
- *      Preprocessed a raw dialogue string into an array of type
- *      AUNLG.Locution.
- *
- * @param  {string} pTestString:string
- *      The Raw dialogue string that should be preprocessed.
- * @return {Array<AUNLG.Locution>}
- *      An array of instantiated derivations of AUNGL.Locution.
- */
-function getPreprocessedDialogue(pTestString:string):Array<AUNLG.Locution> {
-    return AUNLG.preprocessDialogue(pTestString);
-}
-
-
 function getRenderedTexts(pLocutions:Array<AUNLG.Locution>, pSpeaker:string, pBindings:any):Array<string> {
     var renderedTexts:Array<string> = [];
     var i:number;
@@ -60,7 +45,7 @@ function concatTextsArray(pRenderedTexts:Array<string>):string {
 
 function testDialogueString(pDialogue:string, pSpeaker:string, pBindings:any) {
     console.log(pDialogue);
-    var locutions:Array<AUNLG.Locution> = getPreprocessedDialogue(pDialogue);
+    var locutions:Array<AUNLG.Locution> = AUNLG.preprocessDialogue(pDialogue);
     var locutionStrings = getRenderedTexts(locutions, pSpeaker, pBindings);
     console.log(concatTextsArray(locutionStrings));
 }

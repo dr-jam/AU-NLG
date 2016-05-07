@@ -21,9 +21,6 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
         }
     }
     exports.test = test;
-    function getPreprocessedDialogue(pTestString) {
-        return AUNLG.preprocessDialogue(pTestString);
-    }
     function getRenderedTexts(pLocutions, pSpeaker, pBindings) {
         var renderedTexts = [];
         var i;
@@ -37,7 +34,7 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
     }
     function testDialogueString(pDialogue, pSpeaker, pBindings) {
         console.log(pDialogue);
-        var locutions = getPreprocessedDialogue(pDialogue);
+        var locutions = AUNLG.preprocessDialogue(pDialogue);
         var locutionStrings = getRenderedTexts(locutions, pSpeaker, pBindings);
         console.log(concatTextsArray(locutionStrings));
     }
