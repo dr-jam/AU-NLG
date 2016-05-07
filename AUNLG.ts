@@ -24,10 +24,10 @@ module AUNLG {
     }
 
     /**
-     * CharacterValueLocution
-     *      Instances of this class will return a value for the key passed in to
-     *      the constructor.  It searches the character object from cast.json
-     *      for the specified key.
+     * CharacterValueLocution:
+     * Constructor
+     *      Accepts a key string for which to find within a given character's
+     *      object from cast.json.
      *
      * renderText
      *      Returns the value of the key for the character specified in pBindings.
