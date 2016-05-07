@@ -4,23 +4,32 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
     (function (AUNLG) {
         var dataDelimiter = ",";
         var LiteralLocution = (function () {
-            function LiteralLocution(pRawString) {
+            function LiteralLocution(pRawDialogue) {
                 this.text = "";
-                this.text = pRawString;
+                this.text = pRawDialogue;
             }
             LiteralLocution.prototype.renderText = function (speaker, bindings) {
                 return this.text;
             };
             return LiteralLocution;
         }());
+        var CharacterReferenceLocution = (function () {
+            function CharacterReferenceLocution(pRawDialogue) {
+                this.text = "";
+            }
+            CharacterReferenceLocution.prototype.renderText = function (speaker, bindings) {
+                return "";
+            };
+            return CharacterReferenceLocution;
+        }());
         var GenderedLocution = (function () {
-            function GenderedLocution(pRawString) {
+            function GenderedLocution(pRawDialogue) {
                 this.text = "";
                 this.maleChoice = "";
                 this.femaleChoice = "";
                 this.nonBinaryChoice = "";
-                this.text = pRawString;
-                var rawChoices = parseLocutionData(pRawString, dataDelimiter)[0];
+                this.text = pRawDialogue;
+                var rawChoices = parseLocutionData(pRawDialogue, dataDelimiter)[0];
                 var splitChoices = rawChoices.split("/");
                 this.maleChoice = splitChoices[0];
                 this.femaleChoice = splitChoices[1];
@@ -37,11 +46,11 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             return GenderedLocution;
         }());
         var RandomLocution = (function () {
-            function RandomLocution(pRawString) {
+            function RandomLocution(pRawDialogue) {
                 this.choices = [];
                 this.text = "";
-                this.text = pRawString;
-                this.choices = parseLocutionData(pRawString, dataDelimiter);
+                this.text = pRawDialogue;
+                this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
             }
             RandomLocution.prototype.makeChoice = function () {
                 var randomNumber = Math.floor(Math.random() * this.choices.length);

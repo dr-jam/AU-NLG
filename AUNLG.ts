@@ -13,13 +13,22 @@ module AUNLG {
 
     class LiteralLocution implements Locution {
         text: string = "";
-
-        constructor(pRawString:string) {
-            this.text = pRawString;
+        constructor(pRawDialogue:string) {
+            this.text = pRawDialogue;
         }
-
         renderText(speaker:string, bindings:any) {
             return this.text;
+        }
+    }
+
+
+    class CharacterReferenceLocution implements Locution {
+        text:string = "";
+        constructor(pRawDialogue:string) {
+
+        }
+        renderText(speaker:string, bindings:any) {
+            return "";
         }
     }
 
@@ -30,12 +39,12 @@ module AUNLG {
         femaleChoice:string = "";
         nonBinaryChoice:string = "";
 
-        constructor(pRawString:string) {
-            this.text = pRawString;
+        constructor(pRawDialogue:string) {
+            this.text = pRawDialogue;
             // By convention, there is only one element in a gendered locution data array.
-            var rawChoices:string = parseLocutionData(pRawString, dataDelimiter)[0];
+            var rawChoices:string = parseLocutionData(pRawDialogue, dataDelimiter)[0];
             var splitChoices:Array<string> = rawChoices.split("/");
-            // The male choice should always be listed first.
+            // The order should always be male, female, non-binary
             this.maleChoice = splitChoices[0];
             this.femaleChoice = splitChoices[1];
             this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
@@ -57,9 +66,9 @@ module AUNLG {
         choices:Array<string> = [];       // Parsed choices as string values.
         text:string = "";                 // This instance's string value.
 
-        constructor(pRawString:string) {
-            this.text = pRawString;
-            this.choices = parseLocutionData(pRawString, dataDelimiter);
+        constructor(pRawDialogue:string) {
+            this.text = pRawDialogue;
+            this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
         }
 
         makeChoice():string {
