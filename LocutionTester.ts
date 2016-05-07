@@ -5,7 +5,10 @@ export function test(): void {
    var testStrings:Array<string> = [
        "That's so %specialized(nice)%!",
        "This is %random(wicked, wretched, awesome)%!",
-       "Clayton is having trouble keeping %gendered(his/her/their)% partner happy."
+       "Clayton is having trouble keeping %gendered(his/her/their)% partner happy.",
+       "%charVal(name)% is a %charVal(profession)%.",
+       "I cannot stand to be around %characterValue(name)%!",
+       "%charVal(name)%'s dog is soo cute!"
    ];
    var testBindings:any = {
      "x":"Clayton"

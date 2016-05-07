@@ -4,7 +4,10 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
         var testStrings = [
             "That's so %specialized(nice)%!",
             "This is %random(wicked, wretched, awesome)%!",
-            "Clayton is having trouble keeping %gendered(his/her/their)% partner happy."
+            "Clayton is having trouble keeping %gendered(his/her/their)% partner happy.",
+            "%charVal(name)% is a %charVal(profession)%.",
+            "I cannot stand to be around %characterValue(name)%!",
+            "%charVal(name)%'s dog is soo cute!"
         ];
         var testBindings = {
             "x": "Clayton"
