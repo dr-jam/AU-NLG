@@ -16,7 +16,7 @@ module AUNLG {
         constructor(pRawDialogue:string) {
             this.rawDialogueText = pRawDialogue;
         }
-        renderText(speaker:string, bindings:any) {
+        renderText(pSpeakerRole:string, pBindings:any) {
             return this.rawDialogueText;
         }
     }
@@ -27,7 +27,7 @@ module AUNLG {
         constructor(pRawDialogue:string) {
 
         }
-        renderText(speaker:string, bindings:any) {
+        renderText(pSpeakerRole:string, pBindings:any) {
             return "";
         }
     }
@@ -50,10 +50,8 @@ module AUNLG {
             this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
         }
 
-        renderText(speakerRole:string, bindings:any) {
-            var cast:any = cif.getCharactersWithMetadata();
-            var speakerName:string = bindings[speakerRole];
-            var speaker:any = cast[speakerName];
+        renderText(pSpeakerRole:string, pBindings:any) {
+            var speaker = getSpeakerData(pSpeakerRole, pBindings);
             // Return the choice based on the preferredGender of speakerRole.
             return speaker.preferredGender === "male" ?
                 this.maleChoice : speaker.preferredGender === "female" ?
@@ -77,7 +75,7 @@ module AUNLG {
             return this.choices[randomNumber];
         }
 
-        renderText(speaker:string, bindings:any) {
+        renderText(pSpeakerRole:string, pBindings:any) {
             return this.makeChoice();
         }
     }

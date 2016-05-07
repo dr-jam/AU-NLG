@@ -8,7 +8,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 this.rawDialogueText = "";
                 this.rawDialogueText = pRawDialogue;
             }
-            LiteralLocution.prototype.renderText = function (speaker, bindings) {
+            LiteralLocution.prototype.renderText = function (pSpeakerRole, pBindings) {
                 return this.rawDialogueText;
             };
             return LiteralLocution;
@@ -17,7 +17,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             function CharacterReferenceLocution(pRawDialogue) {
                 this.rawDialogueText = "";
             }
-            CharacterReferenceLocution.prototype.renderText = function (speaker, bindings) {
+            CharacterReferenceLocution.prototype.renderText = function (pSpeakerRole, pBindings) {
                 return "";
             };
             return CharacterReferenceLocution;
@@ -35,10 +35,8 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 this.femaleChoice = splitChoices[1];
                 this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
             }
-            GenderedLocution.prototype.renderText = function (speakerRole, bindings) {
-                var cast = cif.getCharactersWithMetadata();
-                var speakerName = bindings[speakerRole];
-                var speaker = cast[speakerName];
+            GenderedLocution.prototype.renderText = function (pSpeakerRole, pBindings) {
+                var speaker = getSpeakerData(pSpeakerRole, pBindings);
                 return speaker.preferredGender === "male" ?
                     this.maleChoice : speaker.preferredGender === "female" ?
                     this.femaleChoice : this.nonBinaryChoice;
@@ -56,7 +54,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 var randomNumber = Math.floor(Math.random() * this.choices.length);
                 return this.choices[randomNumber];
             };
-            RandomLocution.prototype.renderText = function (speaker, bindings) {
+            RandomLocution.prototype.renderText = function (pSpeakerRole, pBindings) {
                 return this.makeChoice();
             };
             return RandomLocution;
