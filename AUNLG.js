@@ -5,17 +5,17 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         var dataDelimiter = ",";
         var LiteralLocution = (function () {
             function LiteralLocution(pRawDialogue) {
-                this.text = "";
-                this.text = pRawDialogue;
+                this.rawDialogueText = "";
+                this.rawDialogueText = pRawDialogue;
             }
             LiteralLocution.prototype.renderText = function (speaker, bindings) {
-                return this.text;
+                return this.rawDialogueText;
             };
             return LiteralLocution;
         }());
         var CharacterReferenceLocution = (function () {
             function CharacterReferenceLocution(pRawDialogue) {
-                this.text = "";
+                this.rawDialogueText = "";
             }
             CharacterReferenceLocution.prototype.renderText = function (speaker, bindings) {
                 return "";
@@ -24,11 +24,11 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         }());
         var GenderedLocution = (function () {
             function GenderedLocution(pRawDialogue) {
-                this.text = "";
+                this.rawDialogueText = "";
                 this.maleChoice = "";
                 this.femaleChoice = "";
                 this.nonBinaryChoice = "";
-                this.text = pRawDialogue;
+                this.rawDialogueText = pRawDialogue;
                 var rawChoices = parseLocutionData(pRawDialogue, dataDelimiter)[0];
                 var splitChoices = rawChoices.split("/");
                 this.maleChoice = splitChoices[0];
@@ -48,8 +48,8 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         var RandomLocution = (function () {
             function RandomLocution(pRawDialogue) {
                 this.choices = [];
-                this.text = "";
-                this.text = pRawDialogue;
+                this.rawDialogueText = "";
+                this.rawDialogueText = pRawDialogue;
                 this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
             }
             RandomLocution.prototype.makeChoice = function () {
@@ -63,18 +63,22 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         }());
         var SpecializedLocution = (function () {
             function SpecializedLocution(pToken) {
-                this.text = "";
+                this.rawDialogueText = "";
                 this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
             }
-            SpecializedLocution.prototype.renderText = function (speakerRole, bindings) {
-                var cast = cif.getCharactersWithMetadata();
-                var speakerName = bindings[speakerRole];
-                var speaker = cast[speakerName];
+            SpecializedLocution.prototype.renderText = function (pSpeakerRole, pBindings) {
+                var speaker = getSpeakerData(pSpeakerRole, pBindings);
                 var speakersSpecializedWord = speaker.specialWords[this.specializedWord];
                 return speakersSpecializedWord;
             };
             return SpecializedLocution;
         }());
+        function getSpeakerData(pSpeakerRole, pBindings) {
+            var cast = cif.getCharactersWithMetadata();
+            var speakerName = pBindings[pSpeakerRole];
+            var speaker = cast[speakerName];
+            return speaker;
+        }
         function parseLocutionData(pRawData, pDelim) {
             var dataValue = "";
             var singleQuote = "'";

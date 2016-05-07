@@ -7,23 +7,23 @@ module AUNLG {
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
 
     export interface Locution {
-        text:string;  // The text of a Locution object
+        rawDialogueText:string;  // The rawDialogueText of a Locution object
         renderText(speaker:string, bindings:any):string;
     }
 
     class LiteralLocution implements Locution {
-        text: string = "";
+        rawDialogueText: string = "";
         constructor(pRawDialogue:string) {
-            this.text = pRawDialogue;
+            this.rawDialogueText = pRawDialogue;
         }
         renderText(speaker:string, bindings:any) {
-            return this.text;
+            return this.rawDialogueText;
         }
     }
 
 
     class CharacterReferenceLocution implements Locution {
-        text:string = "";
+        rawDialogueText:string = "";
         constructor(pRawDialogue:string) {
 
         }
@@ -34,13 +34,13 @@ module AUNLG {
 
 
     class GenderedLocution implements Locution {
-        text:string = "";
+        rawDialogueText:string = "";
         maleChoice:string = "";
         femaleChoice:string = "";
         nonBinaryChoice:string = "";
 
         constructor(pRawDialogue:string) {
-            this.text = pRawDialogue;
+            this.rawDialogueText = pRawDialogue;
             // By convention, there is only one element in a gendered locution data array.
             var rawChoices:string = parseLocutionData(pRawDialogue, dataDelimiter)[0];
             var splitChoices:Array<string> = rawChoices.split("/");
@@ -64,10 +64,10 @@ module AUNLG {
 
     class RandomLocution implements Locution {
         choices:Array<string> = [];       // Parsed choices as string values.
-        text:string = "";                 // This instance's string value.
+        rawDialogueText:string = "";                 // This instance's string value.
 
         constructor(pRawDialogue:string) {
-            this.text = pRawDialogue;
+            this.rawDialogueText = pRawDialogue;
             this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
         }
 
@@ -84,9 +84,10 @@ module AUNLG {
 
 
     class SpecializedLocution implements Locution {
-        text:string = "";   // The string value for this locution.
+        rawDialogueText:string = "";   // The string value for this locution.
         bindings:Object;    // Hold the bindings for this locution.
         specializedWord:string;
+        
         constructor(pToken:string) {
             // By convention, this locution only has one argument, and that is
             // the type of specialized word to look up in the cast.
@@ -94,16 +95,35 @@ module AUNLG {
             this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
         }
 
-        renderText(speakerRole:string, bindings:any) {
-            var cast:any = cif.getCharactersWithMetadata();
-            var speakerName:string = bindings[speakerRole];
-            var speaker:any = cast[speakerName];
+        renderText(pSpeakerRole:string, pBindings:any) {
+            var speaker = getSpeakerData(pSpeakerRole, pBindings);
             var speakersSpecializedWord = speaker.specialWords[this.specializedWord];
             return speakersSpecializedWord;
         }
     }
 
 /* UTILITY FUNCTIONS */
+
+    /**
+     * getSpeakerData - Uses bindings and a role to get the json data from cast.json that
+     *      corresponds to the appropriate cast member who is speaking the locution.
+     *
+     * @param  {string} pSpeakerRole
+     *      A string that represents which role the character represents for this dialogue.
+     *      For example, "x" means the character is the speaker while "z" means the character
+     *      is being referenced within the dialogue.
+     * @param  {Object} pBindings
+     *      An object whose keys are all speakerRoles pertinent to the locution and whose values
+     *      are the character names associated with each given speakerRole.
+     * @return {Object}
+     *      Returns the cast.json object associated with the character referenced by speakerRole.
+     */
+    function getSpeakerData(pSpeakerRole, pBindings) {
+        var cast:any = cif.getCharactersWithMetadata();
+        var speakerName:string = pBindings[pSpeakerRole];
+        var speaker:any = cast[speakerName];
+        return speaker;
+    }
 
     /**
      * parseLocutionData - Extracts data values from a raw locution data string.
@@ -199,7 +219,6 @@ module AUNLG {
         enum LocType { LITERAL, NONLITERAL } // Locution type currently being processed.
         var currentType = LocType.LITERAL;   // LITERAL until SYM is encountered.
         var locutionList:Array<AUNLG.Locution> = [];
-
 
         // Helper function to create a nonliteral locution.
         function createLocution(pToken:string): AUNLG.Locution {
