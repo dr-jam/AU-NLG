@@ -29,13 +29,10 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
         }
         return renderedTexts;
     }
-    function concatTextsArray(pRenderedTexts) {
-        return pRenderedTexts.join("");
-    }
     function testDialogueString(pDialogue, pSpeaker, pBindings) {
         console.log(pDialogue);
         var locutions = AUNLG.preprocessDialogue(pDialogue);
         var locutionStrings = getRenderedTexts(locutions, pSpeaker, pBindings);
-        console.log(concatTextsArray(locutionStrings));
+        console.log(locutionStrings.join(""));
     }
 });

@@ -38,14 +38,9 @@ function getRenderedTexts(pLocutions:Array<AUNLG.Locution>, pSpeaker:string, pBi
 }
 
 
-function concatTextsArray(pRenderedTexts:Array<string>):string {
-    return pRenderedTexts.join("");
-}
-
-
 function testDialogueString(pDialogue:string, pSpeaker:string, pBindings:any) {
     console.log(pDialogue);
     var locutions:Array<AUNLG.Locution> = AUNLG.preprocessDialogue(pDialogue);
     var locutionStrings = getRenderedTexts(locutions, pSpeaker, pBindings);
-    console.log(concatTextsArray(locutionStrings));
+    console.log(locutionStrings.join(""));
 }
