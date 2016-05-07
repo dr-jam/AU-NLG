@@ -76,6 +76,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         }
         function parseLocutionData(pRawData, pDelim) {
             var dataValue = "";
+            var escapeChar = "\\";
             var singleQuote = "'";
             var allValues = [];
             var isSpaceValid = false;
@@ -93,19 +94,23 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             var i;
             for (i = 0; i < pRawData.length; i++) {
                 var theChar = pRawData.charAt(i);
-                if (theChar == pDelim) {
+                if (theChar === pDelim) {
                     if (dataValue) {
                         allValues.push(dataValue);
                     }
                     dataValue = "";
                     isSpaceValid = false;
                 }
-                else if (theChar == " ") {
+                else if (theChar === escapeChar) {
+                    dataValue += pRawData.charAt(i + 1);
+                    i += 1;
+                }
+                else if (theChar === " ") {
                     if (isSpaceValid) {
                         dataValue += theChar;
                     }
                 }
-                else if (theChar == singleQuote) {
+                else if (theChar === singleQuote) {
                     isSpaceValid = !isSpaceValid;
                 }
                 else {
@@ -153,14 +158,14 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             }
             var i;
             for (i = 0; i < pRawDialogue.length; i++) {
-                if (pRawDialogue.charAt(i) == SYM) {
-                    if (currentType == LocType.LITERAL) {
-                        if (token.length != 0) {
+                if (pRawDialogue.charAt(i) === SYM) {
+                    if (currentType === LocType.LITERAL) {
+                        if (token.length !== 0) {
                             locutionList.push(new LiteralLocution(token));
                         }
                         currentType = LocType.NONLITERAL;
                     }
-                    else if (currentType == LocType.NONLITERAL) {
+                    else if (currentType === LocType.NONLITERAL) {
                         if (token.length != 0) {
                             var loc = createLocution(token);
                             if (loc) {

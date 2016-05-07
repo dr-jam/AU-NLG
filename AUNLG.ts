@@ -168,13 +168,13 @@ module AUNLG {
      */
     function parseLocutionData(pRawData:string, pDelim:string) {
         var dataValue:string = "";          // Holds the current data value being parsed.
+        var escapeChar:string = "\\";       // The escape character.
         var singleQuote:string = "'";       // Variable for enhanced readability.
         var allValues:Array<string> = [];   // Holds the parsed data.
         var isSpaceValid:boolean = false;   // Whether or not to add spaces to the data value.
 
         // Quick error check, make sure rawData is surrounded by parentheses.
         if ("(" != pRawData.charAt(0) || ")" != pRawData.charAt(pRawData.length - 1)) {
-            // If not, throw a new error.
             try {
                 throw new Error("Locution data is invalid, missing surrounding " +
                     "parentheses in: " + pRawData);
@@ -191,9 +191,7 @@ module AUNLG {
         var i:number;
         for (i = 0; i < pRawData.length; i++) {
             var theChar:string = pRawData.charAt(i);
-            // Is the character the delimter?
-            if (theChar == pDelim) {
-                // If dataValue is not empty, add it to the data array.
+            if (theChar === pDelim) {
                 if (dataValue) {
                     allValues.push(dataValue);
                 }
@@ -201,14 +199,20 @@ module AUNLG {
                 dataValue = "";
                 isSpaceValid = false;
             }
+            // Or is it the escape character?
+            else if (theChar === escapeChar) {
+                dataValue += pRawData.charAt(i + 1);
+                // Skip the next character so it's not added twice.
+                i += 1;
+            }
             // Or is the character a space?
-            else if (theChar == " ") {
+            else if (theChar === " ") {
                 if (isSpaceValid) {
                     dataValue += theChar;
                 }
             }
             // Or is the character a single quote, changing the validity of a space.
-            else if (theChar == singleQuote) {
+            else if (theChar === singleQuote) {
                 // Only allow spaces between single quotes.
                 isSpaceValid = !isSpaceValid;   // Initial value is false.
             }
@@ -221,7 +225,6 @@ module AUNLG {
         if (dataValue) {
             allValues.push(dataValue);
         }
-
         return allValues;
     }   /* end parseLocutionData */
 
@@ -256,7 +259,7 @@ module AUNLG {
             }
 
             // Find out which Locution type we are making.
-            // indexOf items must be completely lowercase.
+            // indexOf items must be entirely lowercase.
             if (pToken.toLowerCase().indexOf("random") === 0) {
                 return new RandomLocution(trimType(pToken, "random"));
             } else if (pToken.toLowerCase().indexOf("specialized") === 0) {
@@ -277,12 +280,11 @@ module AUNLG {
         // Parse the raw dialogue.
         var i: number;
         for (i = 0; i < pRawDialogue.length; i++) {
-            if (pRawDialogue.charAt(i) == SYM) {
+            if (pRawDialogue.charAt(i) === SYM) {
                 // If our current locution type is a literal, indicating an
                 //   unpaired SYM and the start of a new nonliteral locution.
-                if (currentType == LocType.LITERAL) {
-                    // ... if our token has any content...
-                    if (token.length != 0) {
+                if (currentType === LocType.LITERAL) {
+                    if (token.length !== 0) {
                         // ... instantiate and push a LiteralLocution.
                         locutionList.push(new LiteralLocution(token));
                     }
@@ -291,14 +293,12 @@ module AUNLG {
                 // Else, if the current locution type is nonliteral, indicating
                 //   a second SYM to pair with the first and the
                 //   end of a nonliteral locution have been found.
-                } else if (currentType == LocType.NONLITERAL) {
-                    // ... if our token has any content...
+                } else if (currentType === LocType.NONLITERAL) {
                     if (token.length != 0) {
                         // ... createLocution will determine the locution type.
                         var loc:Locution = createLocution(token);
                         // Did we get a locution back? (no means token was bad).
                         if (loc) {
-                            // ... if so, push it.
                             locutionList.push(loc);
                         }
                     }
