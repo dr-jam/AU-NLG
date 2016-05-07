@@ -7,7 +7,8 @@
 			},
 			"specialWords": {
 				"nice":"whoa!"
-			}
+			},
+            "preferredGender": "non-binary"
 		},
 		"Cogsworth": {
 			"name": "Cogsworth",
@@ -17,7 +18,8 @@
 			},
 			"specialWords": {
 				"nice":"!?!?!?!"
-			}
+			},
+            "preferredGender": "non-binary"
 		},
 		"Clayton": {
 			"name": "Clayton",
@@ -34,7 +36,7 @@
 			"specialWords": {
 				"nice":"awesome"
 			},
-            "preferredGender": "non-binary"
+            "preferredGender": "male"
 		},
 		"Brim": {
 			"name": "Brim",
@@ -50,7 +52,8 @@
 			},
 			"specialWords": {
 				"nice":"Gro0o0o0ovy"
-			}
+			},
+            "preferredGender": "female"
 		},
 		"Emma": {
 			"name": "Emma",
@@ -66,7 +69,8 @@
 			},
 			"specialWords": {
 				"nice":"brotastic"
-			}
+			},
+            "preferredGender": "female"
 		},
 		"Mick": {
 			"name": "Mick",
@@ -81,8 +85,9 @@
 				"mouth": "e"
 			},
 			"specialWords": {
-				"nice":"space suit"
-			}
+				"nice":"space suitastic"
+			},
+            "preferredGender": "non-binary"
 		},
 		"Belle": {
 			"name": "Belle",
@@ -98,7 +103,8 @@
 			},
 			"specialWords": {
 				"nice":"NLG rox"
-			}
+			},
+            "preferredGender": "female"
 		}
 	}
 }
