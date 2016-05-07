@@ -11,33 +11,38 @@ module AUNLG {
         renderText(speaker:string, bindings:any):string;
     }
 
+
     class LiteralLocution implements Locution {
-        rawDialogueText: string = "";
+        rawDialogueText:string;
         constructor(pRawDialogue:string) {
             this.rawDialogueText = pRawDialogue;
         }
-        renderText(pSpeakerRole:string, pBindings:any) {
+        renderText(pCharacterRole:string, pBindings:any) {
             return this.rawDialogueText;
         }
     }
 
 
+    // CharacterReferenceLocution always assumes the reference is third person.
     class CharacterReferenceLocution implements Locution {
-        rawDialogueText:string = "";
-        constructor(pRawDialogue:string) {
-
+        // In this locution, the raw dialogue is the key for which to extract the value
+        // from the cast.json file.  
+        rawDialogueText:string;
+        constructor(pCharacterKey:string) {
+            this.rawDialogueText = pCharacterKey;
         }
-        renderText(pSpeakerRole:string, pBindings:any) {
-            return "";
+        renderText(pCharacterRole:string, pBindings:any) {
+            var characterData = getCharacterData(pCharacterRole, pBindings);
+            return characterData.name;
         }
     }
 
 
     class GenderedLocution implements Locution {
-        rawDialogueText:string = "";
-        maleChoice:string = "";
-        femaleChoice:string = "";
-        nonBinaryChoice:string = "";
+        rawDialogueText:string;
+        maleChoice:string;
+        femaleChoice:string;
+        nonBinaryChoice:string;
 
         constructor(pRawDialogue:string) {
             this.rawDialogueText = pRawDialogue;
@@ -50,11 +55,11 @@ module AUNLG {
             this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
         }
 
-        renderText(pSpeakerRole:string, pBindings:any) {
-            var speaker = getSpeakerData(pSpeakerRole, pBindings);
+        renderText(pCharacterRole:string, pBindings:any) {
+            var characterData = getCharacterData(pCharacterRole, pBindings);
             // Return the choice based on the preferredGender of speakerRole.
-            return speaker.preferredGender === "male" ?
-                this.maleChoice : speaker.preferredGender === "female" ?
+            return characterData.preferredGender === "male" ?
+                this.maleChoice : characterData.preferredGender === "female" ?
                 this.femaleChoice : this.nonBinaryChoice;
         }
     }
@@ -62,7 +67,7 @@ module AUNLG {
 
     class RandomLocution implements Locution {
         choices:Array<string> = [];       // Parsed choices as string values.
-        rawDialogueText:string = "";                 // This instance's string value.
+        rawDialogueText:string;           // This instance's string value.
 
         constructor(pRawDialogue:string) {
             this.rawDialogueText = pRawDialogue;
@@ -75,15 +80,15 @@ module AUNLG {
             return this.choices[randomNumber];
         }
 
-        renderText(pSpeakerRole:string, pBindings:any) {
+        renderText(pCharacterRole:string, pBindings:any) {
             return this.makeChoice();
         }
     }
 
 
     class SpecializedLocution implements Locution {
-        rawDialogueText:string = "";   // The string value for this locution.
-        bindings:Object;    // Hold the bindings for this locution.
+        rawDialogueText:string;     // The string value for this locution.
+        bindings:Object;            // Hold the bindings for this locution.
         specializedWord:string;
 
         constructor(pToken:string) {
@@ -93,20 +98,19 @@ module AUNLG {
             this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
         }
 
-        renderText(pSpeakerRole:string, pBindings:any) {
-            var speaker = getSpeakerData(pSpeakerRole, pBindings);
-            var speakersSpecializedWord = speaker.specialWords[this.specializedWord];
-            return speakersSpecializedWord;
+        renderText(pCharacterRole:string, pBindings:any) {
+            var characterData = getCharacterData(pCharacterRole, pBindings);
+            return characterData.specialWords[this.specializedWord];
         }
     }
 
 /* UTILITY FUNCTIONS */
 
     /**
-     * getSpeakerData - Uses bindings and a role to get the json data from cast.json that
+     * getCharacterData - Uses bindings and a role to get the json data from cast.json that
      *      corresponds to the appropriate cast member who is speaking the locution.
      *
-     * @param  {string} pSpeakerRole
+     * @param  {string} pCharacterRole
      *      A string that represents which role the character represents for this dialogue.
      *      For example, "x" means the character is the speaker while "z" means the character
      *      is being referenced within the dialogue.
@@ -116,11 +120,10 @@ module AUNLG {
      * @return {Object}
      *      Returns the cast.json object associated with the character referenced by speakerRole.
      */
-    function getSpeakerData(pSpeakerRole, pBindings) {
+    function getCharacterData(pCharacterRole, pBindings) {
         var cast:any = cif.getCharactersWithMetadata();
-        var speakerName:string = pBindings[pSpeakerRole];
-        var speaker:any = cast[speakerName];
-        return speaker;
+        var characterName:string = pBindings[pCharacterRole];
+        return cast[characterName];
     }
 
     /**
