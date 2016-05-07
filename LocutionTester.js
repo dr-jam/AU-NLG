@@ -7,10 +7,14 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
             "Clayton is having trouble keeping %gendered(his/her/their)% partner happy.",
             "%charVal(name)% is a %charVal(profession)%.",
             "I cannot stand to be around %characterValue(name)%!",
-            "%charVal(name)%'s dog is soo cute!"
+            "%charVal(name)%'s dog is soo cute!",
+            "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go."
         ];
-        var testBindings = {
+        var claytonBindings = {
             "x": "Clayton"
+        };
+        var cogsworthBindings = {
+            "x": "Cogsworth"
         };
         var loadResult = cif.init();
         var rawSchema = cif.loadFile("etsData/schema.json");
@@ -19,9 +23,10 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
         var cast = cif.addCharacters(rawCast);
         var i;
         for (i = 0; i < testStrings.length; i++) {
-            console.log("\n");
-            testDialogueString(testStrings[i], "x", testBindings);
+            testDialogueString(testStrings[i], "x", claytonBindings);
         }
+        var testEscape = "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go.";
+        testDialogueString(testEscape, "x", cogsworthBindings);
     }
     exports.test = test;
     function getRenderedTexts(pLocutions, pSpeaker, pBindings) {
@@ -33,6 +38,7 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
         return renderedTexts;
     }
     function testDialogueString(pDialogue, pSpeaker, pBindings) {
+        console.log("\n");
         console.log(pDialogue);
         var locutions = AUNLG.preprocessDialogue(pDialogue);
         var locutionStrings = getRenderedTexts(locutions, pSpeaker, pBindings);
