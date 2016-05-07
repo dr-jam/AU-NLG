@@ -87,7 +87,7 @@ module AUNLG {
         rawDialogueText:string = "";   // The string value for this locution.
         bindings:Object;    // Hold the bindings for this locution.
         specializedWord:string;
-        
+
         constructor(pToken:string) {
             // By convention, this locution only has one argument, and that is
             // the type of specialized word to look up in the cast.
@@ -126,20 +126,25 @@ module AUNLG {
     }
 
     /**
-     * parseLocutionData - Extracts data values from a raw locution data string.
-     * For example, the authored dialogue "We all call him %specialized(nickname
-     * , z)%." will return the Array ["nickname", "z"] when given the comma
-     * as a delimiter string.
+     * parseLocutionData
+     *      Extracts data values from a raw locution data string.
+     *      For example, the authored dialogue "We all call him %specialized(nickname
+     *      , z)%." will return the Array ["nickname", "z"] when given the comma
+     *      as a delimiter string.
      *
-     * Reference: - Notes to Authors #2
+     * Reference:
+     *      Notes to Authors #2
      *
-     * @param  {string} pRawData - The data extracted after the locution
-     * type has been determined.  For example, specialized(nickname, z) is a
-     * an unprocessed SpecializedLocution whose data string is "(nickname, z)".
-     * @param  {string} pDelim - The char or string value that is to be
-     * used to indicate a new piece of information is about ot be encountered.
-     * This is typically a comma, as in (nickname, z).
-     * @return {Array} - An array containing each piece of data.
+     * @param  {string} pRawData
+     *      The data extracted after the locution type has been determined.
+     *      For example, specialized(nickname, z) is an unprocessed SpecializedLocution
+     *      whose data string is "(nickname, z)".
+     * @param  {string} pDelim
+     *      The char or string value that is to be used to indicate a new piece of
+     *      information is about ot be encountered.  This is typically a comma, as
+     *      in (nickname, z).
+     * @return {Array}
+     *      An array containing each piece of data.
      */
     function parseLocutionData(pRawData:string, pDelim:string) {
         var dataValue:string = "";          // Holds the current data value being parsed.
@@ -202,16 +207,19 @@ module AUNLG {
 
 
     /**
-     * preprocessDialogue - Parses the entire dialogue passed in and creates
-     * the appropriate locution type for each locution within the string, adding
-     * each locution to an Array.  If an unknown locution type is encountered,
-     * the value "undefined" is added to the array.
+     * preprocessDialogue
+     *      Parses the entire dialogue passed in and creates
+     *      the appropriate locution type for each locution within the string, adding
+     *      each locution to an Array.  If an unknown locution type is encountered,
+     *      the value "undefined" is added to the array.
      *
-     * Reference - Notes to Authors #1
+     * Reference
+     *      Notes to Authors #1
      *
-     * @param  {type} pRawDialogue - The raw dialogue that is to be parsed.
-     * @param  {type} pBindings - Bindings that are associated with the dialogue.
-     * @return {Array} locutionList - The dialogue as an array of locutions.
+     * @param  {type} pRawDialogue
+     *      The raw dialogue that is to be parsed.
+     * @return {Array} locutionList
+     *      The dialogue as an array of locutions.
      */
     export function preprocessDialogue(pRawDialogue:string):Array<Locution> {
         var SYM:string = "%";                // The delimeter for locutions.
