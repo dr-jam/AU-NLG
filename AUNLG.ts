@@ -7,45 +7,63 @@ module AUNLG {
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
 
     export interface Locution {
-        rawDialogueText:string;  // The rawDialogueText of a Locution object
+        rawText:string;  // The rawText of a Locution object
         renderText(speaker:string, bindings:any):string;
     }
 
 
     class LiteralLocution implements Locution {
-        rawDialogueText:string;
+        rawText:string;
         constructor(pRawDialogue:string) {
-            this.rawDialogueText = pRawDialogue;
+            this.rawText = pRawDialogue;
         }
-        renderText(pCharacterRole:string, pBindings:any) {
-            return this.rawDialogueText;
+        // Parameters are not required for function LiteralLocution.renderText.
+        renderText(pCharacterRole:string = undefined, pBindings:any = undefined) {
+            return this.rawText;
         }
     }
 
-
-    // CharacterReferenceLocution always assumes the reference is third person.
-    class CharacterReferenceLocution implements Locution {
-        // In this locution, the raw dialogue is the key for which to extract the value
-        // from the cast.json file.  
-        rawDialogueText:string;
+    /**
+     * CharacterValueLocution
+     *      Instances of this class will return a value for the key passed in to
+     *      the constructor.  It searches the character object from cast.json
+     *      for the specified key.
+     *
+     * renderText
+     *      Returns the value of the key for the character specified in pBindings.
+     *      ** If the specified key does not exist within the character's object,
+     *      an empty string is returned. **
+     *
+     * Shorthand
+     *      charVal
+     *
+     * Example raw dialogue strings that will create instances of CharacterValueLocution:
+     *      "I cannot stand to be around %characterValue(name)%!"
+     *      "%charVal(name)% is a %charVal(profession)%."
+     *      "%charVal(name)%'s dog is soo cute!"
+     */
+    class CharacterValueLocution implements Locution {
+        rawText:string;  // The key whose value wil be extracted by renderText.
         constructor(pCharacterKey:string) {
-            this.rawDialogueText = pCharacterKey;
+            // By convention, only a single element in locution data.
+            this.rawText = parseLocutionData(pCharacterKey, dataDelimiter)[0];
         }
         renderText(pCharacterRole:string, pBindings:any) {
             var characterData = getCharacterData(pCharacterRole, pBindings);
-            return characterData.name;
+            var value = characterData[this.rawText];
+            return typeof(value) !== "undefined" ? value : "";
         }
     }
 
 
     class GenderedLocution implements Locution {
-        rawDialogueText:string;
+        rawText:string;
         maleChoice:string;
         femaleChoice:string;
         nonBinaryChoice:string;
 
         constructor(pRawDialogue:string) {
-            this.rawDialogueText = pRawDialogue;
+            this.rawText = pRawDialogue;
             // By convention, there is only one element in a gendered locution data array.
             var rawChoices:string = parseLocutionData(pRawDialogue, dataDelimiter)[0];
             var splitChoices:Array<string> = rawChoices.split("/");
@@ -67,10 +85,10 @@ module AUNLG {
 
     class RandomLocution implements Locution {
         choices:Array<string> = [];       // Parsed choices as string values.
-        rawDialogueText:string;           // This instance's string value.
+        rawText:string;           // This instance's string value.
 
         constructor(pRawDialogue:string) {
-            this.rawDialogueText = pRawDialogue;
+            this.rawText = pRawDialogue;
             this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
         }
 
@@ -80,14 +98,15 @@ module AUNLG {
             return this.choices[randomNumber];
         }
 
-        renderText(pCharacterRole:string, pBindings:any) {
+        // Parameters are not required for function RandomLuction.renderText
+        renderText(pCharacterRole:string = undefined, pBindings:any = undefined) {
             return this.makeChoice();
         }
     }
 
 
     class SpecializedLocution implements Locution {
-        rawDialogueText:string;     // The string value for this locution.
+        rawText:string;     // The string value for this locution.
         bindings:Object;            // Hold the bindings for this locution.
         specializedWord:string;
 
@@ -237,12 +256,18 @@ module AUNLG {
             }
 
             // Find out which Locution type we are making.
+            // indexOf items must be completely lowercase.
             if (pToken.toLowerCase().indexOf("random") === 0) {
                 return new RandomLocution(trimType(pToken, "random"));
             } else if (pToken.toLowerCase().indexOf("specialized") === 0) {
                 return new SpecializedLocution(trimType(pToken, "specialized"));
             } else if (pToken.toLowerCase().indexOf("gendered") === 0) {
                 return new GenderedLocution(trimType(pToken, "gendered"));
+            } else if (pToken.toLowerCase().indexOf("charactervalue") === 0) {
+                return new CharacterValueLocution(trimType(pToken, "characterValue"));
+            // Shorthand for CharacterValueLocution.
+            } else if (pToken.toLowerCase().indexOf("charval") === 0) {
+                return new CharacterValueLocution(trimType(pToken, "charVal"));
             } else {
                 console.log("Unknown locution type: %s", pToken);
                 return undefined;

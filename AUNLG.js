@@ -5,26 +5,29 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         var dataDelimiter = ",";
         var LiteralLocution = (function () {
             function LiteralLocution(pRawDialogue) {
-                this.rawDialogueText = pRawDialogue;
+                this.rawText = pRawDialogue;
             }
             LiteralLocution.prototype.renderText = function (pCharacterRole, pBindings) {
-                return this.rawDialogueText;
+                if (pCharacterRole === void 0) { pCharacterRole = undefined; }
+                if (pBindings === void 0) { pBindings = undefined; }
+                return this.rawText;
             };
             return LiteralLocution;
         }());
-        var CharacterReferenceLocution = (function () {
-            function CharacterReferenceLocution(pCharacterKey) {
-                this.rawDialogueText = pCharacterKey;
+        var CharacterValueLocution = (function () {
+            function CharacterValueLocution(pCharacterKey) {
+                this.rawText = parseLocutionData(pCharacterKey, dataDelimiter)[0];
             }
-            CharacterReferenceLocution.prototype.renderText = function (pCharacterRole, pBindings) {
+            CharacterValueLocution.prototype.renderText = function (pCharacterRole, pBindings) {
                 var characterData = getCharacterData(pCharacterRole, pBindings);
-                return characterData.name;
+                var value = characterData[this.rawText];
+                return typeof (value) !== "undefined" ? value : "";
             };
-            return CharacterReferenceLocution;
+            return CharacterValueLocution;
         }());
         var GenderedLocution = (function () {
             function GenderedLocution(pRawDialogue) {
-                this.rawDialogueText = pRawDialogue;
+                this.rawText = pRawDialogue;
                 var rawChoices = parseLocutionData(pRawDialogue, dataDelimiter)[0];
                 var splitChoices = rawChoices.split("/");
                 this.maleChoice = splitChoices[0];
@@ -42,7 +45,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
         var RandomLocution = (function () {
             function RandomLocution(pRawDialogue) {
                 this.choices = [];
-                this.rawDialogueText = pRawDialogue;
+                this.rawText = pRawDialogue;
                 this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
             }
             RandomLocution.prototype.makeChoice = function () {
@@ -50,6 +53,8 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return this.choices[randomNumber];
             };
             RandomLocution.prototype.renderText = function (pCharacterRole, pBindings) {
+                if (pCharacterRole === void 0) { pCharacterRole = undefined; }
+                if (pBindings === void 0) { pBindings = undefined; }
                 return this.makeChoice();
             };
             return RandomLocution;
@@ -134,6 +139,12 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 }
                 else if (pToken.toLowerCase().indexOf("gendered") === 0) {
                     return new GenderedLocution(trimType(pToken, "gendered"));
+                }
+                else if (pToken.toLowerCase().indexOf("charactervalue") === 0) {
+                    return new CharacterValueLocution(trimType(pToken, "characterValue"));
+                }
+                else if (pToken.toLowerCase().indexOf("charval") === 0) {
+                    return new CharacterValueLocution(trimType(pToken, "charVal"));
                 }
                 else {
                     console.log("Unknown locution type: %s", pToken);
