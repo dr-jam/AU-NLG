@@ -8,7 +8,7 @@ export function test(): void {
        // Test RandomLocution.
        "This is %random(wicked, wretched, awesome)%!",
        // Test GenderedLocution.
-       "Clayton is having trouble keeping %gendered(his/her/their)% partner happy.",
+       "%charVal(name)% is having trouble keeping %gendered(his/her/their)% partner happy.",
        "%gendered('He was'/'She was'/'They were')% turned into a %gendered(blue/yellow/red)% parrot.",
        "%gendered(Mr./Mrs./Mx.)% %charVal(name)% sent an RSVP already.",
        // Test CharacterValueLocution.
@@ -18,14 +18,19 @@ export function test(): void {
        // Test the escape character for locution data.
        "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go."
    ];
-   var claytonBindings:any = {
-       // preferredGender = male.
-       "x": "Clayton"
-   };
-   var cogsworthBindings:any = {
-       // preferredGender = non-binary.
-       "x": "Cogsworth"
-   };
+   var bindings:Array<any> = [
+       {
+           // preferredGender = male.
+           "x": "Clayton"
+       },{
+           // Cogsworth.
+           // preferredGender = non-binary.
+           "x": "Cogsworth"
+       },{
+           // preferredGender = female.
+           "x": "Brim"
+       }
+   ];
 
    // Init CiF.
    var loadResult:any = cif.init();
@@ -38,8 +43,13 @@ export function test(): void {
    // Output the tests.
    var i: number;
    for (i = 0; i < testStrings.length; i++) {
-       testDialogueString(testStrings[i], "x", claytonBindings);
+       testDialogueString(testStrings[i], "x", getRandomFromArray(bindings));
    }
+}
+
+function getRandomFromArray(pArray:Array<any>):any {
+    var randomIndex:number = Math.floor(Math.random() * pArray.length);
+    return pArray[randomIndex];
 }
 
 
