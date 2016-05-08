@@ -4,6 +4,7 @@
 */
 import cif = require('cif');
 module AUNLG {
+    /*  GLOBAL VARIABLES */
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
 
 
@@ -15,7 +16,6 @@ module AUNLG {
         rawText:string;  // The rawText of a Locution object
         renderText(speaker:string, bindings:any):string;
     }
-
 
     /**
      * constructor
