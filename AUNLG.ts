@@ -6,12 +6,25 @@ import cif = require('cif');
 module AUNLG {
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
 
+
+    /**
+     * Implementations of interface Locution require rawText and a
+     *      renderText function.
+     */
     export interface Locution {
         rawText:string;  // The rawText of a Locution object
         renderText(speaker:string, bindings:any):string;
     }
 
 
+    /**
+     * constructor
+     *      Takes the string that represents this literal locution.  This class is
+     *      for maintaing the exact text from a raw dialogue string.
+     *
+     * renderText
+     *      Returns the string passed in during instantiation.
+     */
     class LiteralLocution implements Locution {
         rawText:string;
         constructor(pRawDialogue:string) {
@@ -24,9 +37,8 @@ module AUNLG {
     }
 
     /**
-     * CharacterValueLocution:
      * Constructor
-     *      Accepts a key string for which to find within a given character's
+     *      Takes a key string for which to find within a given character's
      *      object from cast.json.
      *
      * renderText
@@ -56,6 +68,24 @@ module AUNLG {
     }
 
 
+    /**
+     * constructor
+     *      Takes two or three elements, separated by a forward slash, which directly map
+     *      to strings that are delivered via renderText dependent on age.  Order of the
+     *      strings is male/female[/non-binary].
+     *
+     * renderText
+     *      Takes a characterRole string, which is used as the key to obtain the character
+     *      name from the bindings.  The appropriate string is returned based on the character's
+     *      gender preference.
+     *      ** If the character has a non-binary gender preference and a non-binary string
+     *      is not passed in during instantiation, an empty string is returned. **
+     *
+     * Example raw dialogue strings that will create instances of GenderedLocution:
+     *      "Clayton is having trouble keeping %gendered(his/her/their)% partner happy."
+     *      "%gendered(He/She/They)% were turned into a %gendered(blue/yellow/red)% parrot."
+     *      "%gendered(Mr./Mrs./Mx.)% %charVal(name)% sent an RSVP already."
+     */
     class GenderedLocution implements Locution {
         rawText:string;
         maleChoice:string;
@@ -83,6 +113,18 @@ module AUNLG {
     }
 
 
+    /**
+     * constructor
+     *      Takes a raw string (surrounded by parentheses) that is parsed
+     *      into an array containing each choice.
+     *
+     * renderText
+     *      returns a random choice from the choices array.
+     *
+     * Example dialogue strings that will create instances of RandomLocution:
+     *      "This is %random(wicked, wretched, awesome)%!"
+     *      "That's so %random(frustrating, aggravating, bonkers)%!"
+     */
     class RandomLocution implements Locution {
         choices:Array<string> = [];       // Parsed choices as string values.
         rawText:string;           // This instance's string value.
@@ -92,42 +134,50 @@ module AUNLG {
             this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
         }
 
-        makeChoice():string {
-            // Return a random item from the choices array.
-            var randomNumber:number = Math.floor(Math.random() * this.choices.length);
-            return this.choices[randomNumber];
-        }
-
         // Parameters are not required for function RandomLuction.renderText
         renderText(pCharacterRole:string = undefined, pBindings:any = undefined) {
-            return this.makeChoice();
+            var randomNumber:number = Math.floor(Math.random() * this.choices.length);
+            return this.choices[randomNumber];
         }
     }
 
 
+    /**
+     * Constructor
+     *      Takes a string (surrounded by parentheses) that's equal to a key within
+     *      a cast members specialWords object.  For example: (nice), (sexy).
+     *
+     * renderText
+     *      Extracts the character's data who is specified by character role as the key
+     *      within the bindings object.  Returns the value for the key from the
+     *      specialWords object inside the appropriate character's data.
+     *      ** If the key is not found within the array it will return an empty string. **
+     *
+     * Example dialogue strings that will create instances of SpecializedLocution.
+     *      "That's so %specialized(nice)%!"
+     */
     class SpecializedLocution implements Locution {
-        rawText:string;     // The string value for this locution.
+        rawText:string;             // The string value for this locution.
         bindings:Object;            // Hold the bindings for this locution.
         specializedWord:string;
 
         constructor(pToken:string) {
-            // By convention, this locution only has one argument, and that is
-            // the type of specialized word to look up in the cast.
-            // %specialized(greeting)%
+            // By convention, this locution only has one argument.
             this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
         }
 
         renderText(pCharacterRole:string, pBindings:any) {
             var characterData = getCharacterData(pCharacterRole, pBindings);
-            return characterData.specialWords[this.specializedWord];
+            var specialWord = characterData.specialWords[this.specializedWord];
+            return typeof(specialWord) !== "undefined" ? specialWord : "";
         }
     }
 
 /* UTILITY FUNCTIONS */
 
     /**
-     * getCharacterData - Uses bindings and a role to get the json data from cast.json that
-     *      corresponds to the appropriate cast member who is speaking the locution.
+     *  Uses bindings and a role to get the json data from cast.json that
+     *  corresponds to the appropriate cast member who is speaking the locution.
      *
      * @param  {string} pCharacterRole
      *      A string that represents which role the character represents for this dialogue.
@@ -137,13 +187,14 @@ module AUNLG {
      *      An object whose keys are all speakerRoles pertinent to the locution and whose values
      *      are the character names associated with each given speakerRole.
      * @return {Object}
-     *      Returns the cast.json object associated with the character referenced by speakerRole.
+     *      The cast.json object associated with the character referenced by speakerRole.
      */
     function getCharacterData(pCharacterRole, pBindings) {
         var cast:any = cif.getCharactersWithMetadata();
         var characterName:string = pBindings[pCharacterRole];
         return cast[characterName];
     }
+
 
     /**
      * parseLocutionData
@@ -199,13 +250,11 @@ module AUNLG {
                 dataValue = "";
                 isSpaceValid = false;
             }
-            // Or is it the escape character?
             else if (theChar === escapeChar) {
                 dataValue += pRawData.charAt(i + 1);
-                // Skip the next character so it's not added twice.
+                // Skip the character that was just added.
                 i += 1;
             }
-            // Or is the character a space?
             else if (theChar === " ") {
                 if (isSpaceValid) {
                     dataValue += theChar;

@@ -48,14 +48,11 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 this.rawText = pRawDialogue;
                 this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
             }
-            RandomLocution.prototype.makeChoice = function () {
-                var randomNumber = Math.floor(Math.random() * this.choices.length);
-                return this.choices[randomNumber];
-            };
             RandomLocution.prototype.renderText = function (pCharacterRole, pBindings) {
                 if (pCharacterRole === void 0) { pCharacterRole = undefined; }
                 if (pBindings === void 0) { pBindings = undefined; }
-                return this.makeChoice();
+                var randomNumber = Math.floor(Math.random() * this.choices.length);
+                return this.choices[randomNumber];
             };
             return RandomLocution;
         }());
@@ -65,7 +62,8 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             }
             SpecializedLocution.prototype.renderText = function (pCharacterRole, pBindings) {
                 var characterData = getCharacterData(pCharacterRole, pBindings);
-                return characterData.specialWords[this.specializedWord];
+                var specialWord = characterData.specialWords[this.specializedWord];
+                return typeof (specialWord) !== "undefined" ? specialWord : "";
             };
             return SpecializedLocution;
         }());
