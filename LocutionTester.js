@@ -5,6 +5,8 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
             "That's so %specialized(nice)%!",
             "This is %random(wicked, wretched, awesome)%!",
             "Clayton is having trouble keeping %gendered(his/her/their)% partner happy.",
+            "%gendered('He was'/'She was'/'They were')% turned into a %gendered(blue/yellow/red)% parrot.",
+            "%gendered(Mr./Mrs./Mx.)% %charVal(name)% sent an RSVP already.",
             "%charVal(name)% is a %charVal(profession)%.",
             "I cannot stand to be around %characterValue(name)%!",
             "%charVal(name)%'s dog is soo cute!",
@@ -25,8 +27,6 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
         for (i = 0; i < testStrings.length; i++) {
             testDialogueString(testStrings[i], "x", claytonBindings);
         }
-        var testEscape = "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go.";
-        testDialogueString(testEscape, "x", cogsworthBindings);
     }
     exports.test = test;
     function getRenderedTexts(pLocutions, pSpeaker, pBindings) {

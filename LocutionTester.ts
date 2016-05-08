@@ -9,6 +9,8 @@ export function test(): void {
        "This is %random(wicked, wretched, awesome)%!",
        // Test GenderedLocution.
        "Clayton is having trouble keeping %gendered(his/her/their)% partner happy.",
+       "%gendered('He was'/'She was'/'They were')% turned into a %gendered(blue/yellow/red)% parrot.",
+       "%gendered(Mr./Mrs./Mx.)% %charVal(name)% sent an RSVP already.",
        // Test CharacterValueLocution.
        "%charVal(name)% is a %charVal(profession)%.",
        "I cannot stand to be around %characterValue(name)%!",
@@ -38,9 +40,6 @@ export function test(): void {
    for (i = 0; i < testStrings.length; i++) {
        testDialogueString(testStrings[i], "x", claytonBindings);
    }
-   // Test the locution data parsing escape character using a non-binary gendered locution.
-   var testEscape:string = "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go.";
-   testDialogueString(testEscape, "x", cogsworthBindings);
 }
 
 
