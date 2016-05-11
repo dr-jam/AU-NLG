@@ -9,16 +9,23 @@ define(["require", "exports", './AUNLG', 'cif'], function (require, exports, AUN
             "%gendered(Mr./Mrs./Mx.)% %charVal(name)% sent an RSVP already.",
             "%charVal(name)% is a %charVal(profession)%.",
             "I cannot stand to be around %characterValue(name)%!",
-            "%charVal(name)%'s dog is soo cute!",
-            "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go."
+            "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go.",
+            "%x% wants to visit the zoo.",
+            "%z(possessive)% eyes are so dreamy."
         ];
         var bindings = [
             {
-                "x": "Clayton"
+                "x": "Clayton",
+                "z": "Belle"
             }, {
-                "x": "Cogsworth"
+                "x": "Cogsworth",
+                "z": "Mick"
             }, {
-                "x": "Brim"
+                "x": "Brim",
+                "z": "Emma"
+            }, {
+                "x": "Gus",
+                "z": "Clayton"
             }
         ];
         var loadResult = cif.init();

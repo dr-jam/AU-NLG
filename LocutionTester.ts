@@ -14,21 +14,30 @@ export function test(): void {
        // Test CharacterValueLocution.
        "%charVal(name)% is a %charVal(profession)%.",
        "I cannot stand to be around %characterValue(name)%!",
-       "%charVal(name)%'s dog is soo cute!",
        // Test the escape character for locution data.
-       "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go."
+       "%charVal(name)% said that %gendered(he\\'s / she\\'s / they\\'re)% wanting to go.",
+       // Test the CharacterLocution.
+       "%x% wants to visit the zoo.",
+       "%z(possessive)% eyes are so dreamy."
    ];
    var bindings:Array<any> = [
        {
            // preferredGender = male.
-           "x": "Clayton"
-       },{
+           "x": "Clayton",
+           "z": "Belle"
+       }, {
            // Cogsworth.
            // preferredGender = non-binary.
-           "x": "Cogsworth"
-       },{
+           "x": "Cogsworth",
+           "z": "Mick"
+       }, {
            // preferredGender = female.
-           "x": "Brim"
+           "x": "Brim",
+           "z": "Emma"
+       }, {
+           // preferredGender = male.
+           "x": "Gus",
+           "z": "Clayton"
        }
    ];
 
