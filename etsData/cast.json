@@ -57,7 +57,7 @@
 		},
 		"Emma": {
 			"name": "Emma",
-		  "profession": "Sheriff",
+            "profession": "Sheriff",
 			"graphics": {
 				"icon": "female1",
 				"body": "b",
@@ -105,6 +105,23 @@
 				"nice":"NLG rox"
 			},
             "preferredGender": "female"
-		}
+		},
+        "Gus": {
+            "name": "Gus",
+          "profession": "Gestation Tube Operations Manager",
+          "graphics": {
+              "icon": "male1",
+              "body": "d",
+              "head": "l",
+              "hair": "d",
+              "nose": "a",
+              "eyes": "c",
+              "mouth": "e"
+          },
+            "specialWords": {
+                "nice":"totes zygotic"
+            },
+            "preferredGender": "male"
+        }
 	}
 }
