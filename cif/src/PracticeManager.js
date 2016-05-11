@@ -1,3 +1,5 @@
+/* jshint -W033 */
+
 /*
 This may be better named as SocialPracticeManager. It could contain high-level
 functions dealing with social practices like: get choices, select actions,
