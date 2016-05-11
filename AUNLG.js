@@ -14,6 +14,23 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             };
             return LiteralLocution;
         }());
+        var CharacterLocution = (function () {
+            function CharacterLocution(pRawOption) {
+                if (pRawOption === void 0) { pRawOption = undefined; }
+                this.rawText = typeof (pRawOption) !== "undefined"
+                    ? parseLocutionData(pRawOption, dataDelimiter)[0]
+                    : undefined;
+            }
+            CharacterLocution.prototype.renderText = function (pCharacterRole, pBindings) {
+                var characterData = getCharacterData(pCharacterRole, pBindings);
+                var name = characterData.name;
+                if ("possessive" === this.rawText) {
+                    name += name.charAt(name.length - 1).toLowerCase() === "s" ? "'" : "'s";
+                }
+                return name;
+            };
+            return CharacterLocution;
+        }());
         var CharacterValueLocution = (function () {
             function CharacterValueLocution(pCharacterKey) {
                 this.rawText = parseLocutionData(pCharacterKey, dataDelimiter)[0];
@@ -36,9 +53,11 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             }
             GenderedLocution.prototype.renderText = function (pCharacterRole, pBindings) {
                 var characterData = getCharacterData(pCharacterRole, pBindings);
-                return characterData.preferredGender === "male" ?
-                    this.maleChoice : characterData.preferredGender === "female" ?
-                    this.femaleChoice : this.nonBinaryChoice;
+                return characterData.preferredGender === "male"
+                    ? this.maleChoice
+                    : characterData.preferredGender === "female"
+                        ? this.femaleChoice
+                        : this.nonBinaryChoice;
             };
             return GenderedLocution;
         }());
@@ -134,20 +153,25 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 function trimType(pSource, pTypeString) {
                     return pSource.slice(pTypeString.length, pSource.length);
                 }
-                if (pToken.toLowerCase().indexOf("random") === 0) {
+                pToken = pToken.toLowerCase();
+                if (pToken.indexOf("random") === 0) {
                     return new RandomLocution(trimType(pToken, "random"));
                 }
-                else if (pToken.toLowerCase().indexOf("specialized") === 0) {
+                else if (pToken.indexOf("specialized") === 0) {
                     return new SpecializedLocution(trimType(pToken, "specialized"));
                 }
-                else if (pToken.toLowerCase().indexOf("gendered") === 0) {
+                else if (pToken.indexOf("gendered") === 0) {
                     return new GenderedLocution(trimType(pToken, "gendered"));
                 }
-                else if (pToken.toLowerCase().indexOf("charactervalue") === 0) {
+                else if (pToken.indexOf("charactervalue") === 0) {
                     return new CharacterValueLocution(trimType(pToken, "characterValue"));
                 }
-                else if (pToken.toLowerCase().indexOf("charval") === 0) {
+                else if (pToken.indexOf("charval") === 0) {
                     return new CharacterValueLocution(trimType(pToken, "charVal"));
+                }
+                else if (["x", "y", "z"].indexOf(pToken.charAt(0)) >= 0) {
+                    var trimmed = (pToken.length > 1) ? trimType(pToken, "x") : undefined;
+                    return new CharacterLocution(trimmed);
                 }
                 else {
                     console.log("Unknown locution type: %s", pToken);

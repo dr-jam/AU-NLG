@@ -36,6 +36,46 @@ module AUNLG {
         }
     }
 
+
+    /**
+     * constructor
+     *      Does not require any parameters for a default x, y or z instance.  However,
+     *      a type can be passed in as a string, which affects the name returned.
+     *      Current implementaiton allows for the following types:
+     *          - possessive
+     *
+     * renderText
+     *      Takes a character role which allows for getting the character's whose name should
+     *      be rendered.  Checks for a type passed in during instantiating to manipulate the
+     *      name.  For example, if 'possessive' was passed in and the name is Alex, renderText
+     *      will return Alex's; alternatively, if the name ends in an 's', it will return the
+     *      name proceeded by an apostrophe, as in Gus'.
+     *
+     * Reference - Notes to Authors #3
+     *
+     * Example raw dialogue strings that will create instances of CharacterLocution:
+     *      "%x% wants to visit the zoo."
+     *      "%z(possessive)% eyes are so dreamy."
+     */
+    class CharacterLocution implements Locution {
+        rawText:string;
+        // A CharacterLocution may not have any options.
+        constructor(pRawOption:string = undefined) {
+            this.rawText = typeof (pRawOption) !== "undefined"
+                            // If there is an option, it will only be a single option.
+                            ? parseLocutionData(pRawOption, dataDelimiter)[0]
+                            : undefined;
+        }
+        renderText(pCharacterRole:string, pBindings:any) {
+            var characterData = getCharacterData(pCharacterRole, pBindings);
+            var name = characterData.name;
+            if ("possessive" === this.rawText) {
+                name += name.charAt(name.length - 1).toLowerCase() === "s" ? "'" : "'s";
+            }
+            return name;
+        }
+    }
+
     /**
      * Constructor
      *      Takes a key string for which to find within a given character's
@@ -102,13 +142,14 @@ module AUNLG {
             this.femaleChoice = splitChoices[1];
             this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
         }
-
         renderText(pCharacterRole:string, pBindings:any) {
             var characterData = getCharacterData(pCharacterRole, pBindings);
             // Return the choice based on the preferredGender of speakerRole.
-            return characterData.preferredGender === "male" ?
-                this.maleChoice : characterData.preferredGender === "female" ?
-                this.femaleChoice : this.nonBinaryChoice;
+            return characterData.preferredGender === "male"
+                ? this.maleChoice
+                : characterData.preferredGender === "female"
+                    ? this.femaleChoice
+                    : this.nonBinaryChoice;
         }
     }
 
@@ -133,7 +174,6 @@ module AUNLG {
             this.rawText = pRawDialogue;
             this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
         }
-
         // Parameters are not required for function RandomLuction.renderText
         renderText(pCharacterRole:string = undefined, pBindings:any = undefined) {
             var randomNumber:number = Math.floor(Math.random() * this.choices.length);
@@ -165,7 +205,6 @@ module AUNLG {
             // By convention, this locution only has one argument.
             this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
         }
-
         renderText(pCharacterRole:string, pBindings:any) {
             var characterData = getCharacterData(pCharacterRole, pBindings);
             var specialWord = characterData.specialWords[this.specializedWord];
@@ -262,7 +301,6 @@ module AUNLG {
             }
             // Or is the character a single quote, changing the validity of a space.
             else if (theChar === singleQuote) {
-                // Only allow spaces between single quotes.
                 isSpaceValid = !isSpaceValid;   // Initial value is false.
             }
             // Otherwise, the character is valid.
@@ -306,20 +344,25 @@ module AUNLG {
             function trimType(pSource:string, pTypeString:string):string {
                 return pSource.slice(pTypeString.length, pSource.length);
             }
-
             // Find out which Locution type we are making.
             // indexOf items must be entirely lowercase.
-            if (pToken.toLowerCase().indexOf("random") === 0) {
+            pToken = pToken.toLowerCase();
+            if (pToken.indexOf("random") === 0) {
                 return new RandomLocution(trimType(pToken, "random"));
-            } else if (pToken.toLowerCase().indexOf("specialized") === 0) {
+            } else if (pToken.indexOf("specialized") === 0) {
                 return new SpecializedLocution(trimType(pToken, "specialized"));
-            } else if (pToken.toLowerCase().indexOf("gendered") === 0) {
+            } else if (pToken.indexOf("gendered") === 0) {
                 return new GenderedLocution(trimType(pToken, "gendered"));
-            } else if (pToken.toLowerCase().indexOf("charactervalue") === 0) {
+            } else if (pToken.indexOf("charactervalue") === 0) {
                 return new CharacterValueLocution(trimType(pToken, "characterValue"));
             // Shorthand for CharacterValueLocution.
-            } else if (pToken.toLowerCase().indexOf("charval") === 0) {
+            } else if (pToken.indexOf("charval") === 0) {
                 return new CharacterValueLocution(trimType(pToken, "charVal"));
+            // For CharacterLocutions, check if x, y, or z is the first character of the token.
+            } else if (["x", "y", "z"].indexOf(pToken.charAt(0)) >= 0) {
+                // Only pass in a string when there is an option.
+                var trimmed:string = (pToken.length > 1) ? trimType(pToken, "x") : undefined;
+                return new CharacterLocution(trimmed);
             } else {
                 console.log("Unknown locution type: %s", pToken);
                 return undefined;
@@ -334,27 +377,22 @@ module AUNLG {
                 //   unpaired SYM and the start of a new nonliteral locution.
                 if (currentType === LocType.LITERAL) {
                     if (token.length !== 0) {
-                        // ... instantiate and push a LiteralLocution.
                         locutionList.push(new LiteralLocution(token));
                     }
-                    // Change the locution type to nonliteral.
                     currentType = LocType.NONLITERAL;
                 // Else, if the current locution type is nonliteral, indicating
                 //   a second SYM to pair with the first and the
                 //   end of a nonliteral locution have been found.
                 } else if (currentType === LocType.NONLITERAL) {
                     if (token.length != 0) {
-                        // ... createLocution will determine the locution type.
                         var loc:Locution = createLocution(token);
-                        // Did we get a locution back? (no means token was bad).
+                        // Make sure token was valid before adding it.
                         if (loc) {
                             locutionList.push(loc);
                         }
                     }
-                    // Change the current locution type to literal.
                     currentType = LocType.LITERAL;
                 }
-                // Clear the token.
                 token = "";
             // Else, if charAt(i) is not our SYM.
             } else {
