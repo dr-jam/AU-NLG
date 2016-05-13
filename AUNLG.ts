@@ -1,8 +1,6 @@
-/*
-    REFERENCE:
-    https://docs.google.com/document/d/1KENUACiVzmgbTrSJJeyzYoyn7CeUvEMKNP4KCseI9j8/edit?usp=sharing
-*/
 import cif = require('cif');
+
+
 module AUNLG {
     /*  GLOBAL VARIABLES */
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
