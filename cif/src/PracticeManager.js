@@ -26,6 +26,8 @@ define(["ruleLibrary","util","jquery","sfdb"], function(ruleLibrary, util, $, sf
 	var scoredActionsInfo = [];
 	var scoredMTInfo = {};
 
+	var practiceRecord = {};
+
 	var addPractice = function(rawPractice) {
 		practices.push(rawPractice.practice);
 	}
@@ -377,6 +379,15 @@ define(["ruleLibrary","util","jquery","sfdb"], function(ruleLibrary, util, $, sf
 		sfdb.setupNextTimeStep();
 	//	console.log("Current time: " + sfdb.getCurrentTimeStep());
 		sfdb.dumpSFDB();
+
+		//Keep a record that this action has happened between these two characters
+		//initiator->responder->practice->stage->action->count
+		var recordIndex = currentRoleBindings.x + "-" + currentRoleBindings.y + "-" + getCurrentPractice().label + "-" + getCurrentStage().label + "-" + getCurrentAction().label;
+		if (practiceRecord[recordIndex] === undefined) {
+			practiceRecord[recordIndex] = 0;
+		} else {
+			practiceRecord[recordIndex] += 1;
+		}
 	};
 
 	var getCloneOfBoundPredicates = function(preds, bindings) {
@@ -752,6 +763,10 @@ define(["ruleLibrary","util","jquery","sfdb"], function(ruleLibrary, util, $, sf
 		return scoredMTInfo;
 	}
 
+	var getPracticeRecord = function() {
+		return practiceRecord;
+	}
+
 	return {
 		evaluateRule: evaluateRule,
 		testEvaluateRule: testEvaluateRule,
@@ -784,6 +799,7 @@ define(["ruleLibrary","util","jquery","sfdb"], function(ruleLibrary, util, $, sf
 		getScoredMTInfo:getScoredMTInfo,
 		getScoredActionsInfo:getScoredActionsInfo,
 		deleteStage: deleteStage,
-		updateStage: updateStage
+		updateStage: updateStage,
+		getPracticeRecord: getPracticeRecord
 	};
 });

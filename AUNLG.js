@@ -3,6 +3,10 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
     var AUNLG;
     (function (AUNLG) {
         var dataDelimiter = ",";
+        var practiceRecord = {};
+        var currentPracticeLabel = "";
+        var currentStageLabel = "";
+        var currentActionLabel = "";
         var LiteralLocution = (function () {
             function LiteralLocution(pRawDialogue) {
                 this.rawText = pRawDialogue;
@@ -13,7 +17,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return this.rawText;
             };
             return LiteralLocution;
-        }());
+        })();
         var CharacterLocution = (function () {
             function CharacterLocution(pRawOption) {
                 if (pRawOption === void 0) { pRawOption = undefined; }
@@ -30,18 +34,20 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return name;
             };
             return CharacterLocution;
-        }());
+        })();
         var CharacterValueLocution = (function () {
             function CharacterValueLocution(pCharacterKey) {
-                this.rawText = parseLocutionData(pCharacterKey, dataDelimiter)[0];
+                this.rawText = pCharacterKey;
+                this.role = parseLocutionData(pCharacterKey, dataDelimiter)[0];
+                this.charDataLabel = parseLocutionData(pCharacterKey, dataDelimiter)[1];
             }
             CharacterValueLocution.prototype.renderText = function (pCharacterRole, pBindings) {
-                var characterData = getCharacterData(pCharacterRole, pBindings);
-                var value = characterData[this.rawText];
+                var characterData = getCharacterData(this.role, pBindings);
+                var value = characterData[this.charDataLabel];
                 return typeof (value) !== "undefined" ? value : "";
             };
             return CharacterValueLocution;
-        }());
+        })();
         var GenderedLocution = (function () {
             function GenderedLocution(pRawDialogue) {
                 this.rawText = pRawDialogue;
@@ -53,14 +59,14 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
             }
             GenderedLocution.prototype.renderText = function (pCharacterRole, pBindings) {
                 var characterData = getCharacterData(pCharacterRole, pBindings);
-                return characterData.preferredGender === "male"
+                return characterData.genderIdentity === "male"
                     ? this.maleChoice
-                    : characterData.preferredGender === "female"
+                    : characterData.genderIdentity === "female"
                         ? this.femaleChoice
                         : this.nonBinaryChoice;
             };
             return GenderedLocution;
-        }());
+        })();
         var RandomLocution = (function () {
             function RandomLocution(pRawDialogue) {
                 this.choices = [];
@@ -74,7 +80,51 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return this.choices[randomNumber];
             };
             return RandomLocution;
-        }());
+        })();
+        var RepeatVariationLocution = (function () {
+            function RepeatVariationLocution(pRawDialogue) {
+                this.choices = [];
+                this.rawText = pRawDialogue;
+                this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
+            }
+            RepeatVariationLocution.prototype.renderText = function (pCharacterRole, pBindings) {
+                if (pCharacterRole === void 0) { pCharacterRole = undefined; }
+                if (pBindings === void 0) { pBindings = undefined; }
+                var recordIndex = pBindings.x + "-" + pBindings.y + "-" + currentPracticeLabel + "-" + currentStageLabel + "-" + currentActionLabel;
+                var index = 0;
+                if (practiceRecord[recordIndex] !== undefined) {
+                    index = practiceRecord[recordIndex] % this.choices.length;
+                }
+                return this.choices[index];
+            };
+            return RepeatVariationLocution;
+        })();
+        function updatePracticeRecord(recordIndex) {
+            if (practiceRecord[recordIndex] === undefined) {
+                practiceRecord[recordIndex] = 0;
+            }
+            else {
+                practiceRecord[recordIndex] += 1;
+            }
+        }
+        AUNLG.updatePracticeRecord = updatePracticeRecord;
+        function decrementPracticeRecord(recordIndex) {
+            if (practiceRecord[recordIndex] !== undefined) {
+                if (practiceRecord[recordIndex] <= 0) {
+                    practiceRecord[recordIndex] = undefined;
+                }
+                else {
+                    practiceRecord[recordIndex] -= 1;
+                }
+            }
+        }
+        AUNLG.decrementPracticeRecord = decrementPracticeRecord;
+        function setCurrentPracticeStateInfo(plabel, slabel, alabel) {
+            currentPracticeLabel = plabel;
+            currentStageLabel = slabel;
+            currentActionLabel = alabel;
+        }
+        AUNLG.setCurrentPracticeStateInfo = setCurrentPracticeStateInfo;
         var SpecializedLocution = (function () {
             function SpecializedLocution(pToken) {
                 this.specializedWord = parseLocutionData(pToken, dataDelimiter)[0];
@@ -85,11 +135,17 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 return typeof (specialWord) !== "undefined" ? specialWord : "";
             };
             return SpecializedLocution;
-        }());
+        })();
         function getCharacterData(pCharacterRole, pBindings) {
             var cast = cif.getCharactersWithMetadata();
             var characterName = pBindings[pCharacterRole];
-            return cast[characterName];
+            for (var _i = 0, cast_1 = cast; _i < cast_1.length; _i++) {
+                var character = cast_1[_i];
+                if (character.name === characterName) {
+                    return character;
+                }
+            }
+            return undefined;
         }
         function parseLocutionData(pRawData, pDelim) {
             var dataValue = "";
@@ -153,9 +209,11 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 function trimType(pSource, pTypeString) {
                     return pSource.slice(pTypeString.length, pSource.length);
                 }
-                pToken = pToken.toLowerCase();
                 if (pToken.indexOf("random") === 0) {
                     return new RandomLocution(trimType(pToken, "random"));
+                }
+                else if (pToken.indexOf("repeatVariation") === 0) {
+                    return new RepeatVariationLocution(trimType(pToken, "repeatVariation"));
                 }
                 else if (pToken.indexOf("specialized") === 0) {
                     return new SpecializedLocution(trimType(pToken, "specialized"));
@@ -163,10 +221,10 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 else if (pToken.indexOf("gendered") === 0) {
                     return new GenderedLocution(trimType(pToken, "gendered"));
                 }
-                else if (pToken.indexOf("charactervalue") === 0) {
+                else if (pToken.indexOf("characterValue") === 0) {
                     return new CharacterValueLocution(trimType(pToken, "characterValue"));
                 }
-                else if (pToken.indexOf("charval") === 0) {
+                else if (pToken.indexOf("charVal") === 0) {
                     return new CharacterValueLocution(trimType(pToken, "charVal"));
                 }
                 else if (["x", "y", "z"].indexOf(pToken.charAt(0)) >= 0) {

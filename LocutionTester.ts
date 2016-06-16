@@ -1,5 +1,6 @@
 import AUNLG = require('./AUNLG');
 import cif = require('cif');
+import practiceManager = require('practiceManager');
 
 export function test(): void {
    var testStrings:Array<string> = [

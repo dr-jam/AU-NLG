@@ -1,10 +1,16 @@
 import cif = require('cif');
+import practiceManager = require('practiceManager');
 
 
 module AUNLG {
     /*  GLOBAL VARIABLES */
     var dataDelimiter = ",";  // comma set as default delimiter for parsing locution data.
-
+    var practiceRecord:any = {}; //This will be used for repeatVariation
+    //NOTE: These three labels are to get around some weird require meeting typescipt
+    //      where I can't get access to practiceManager
+    var currentPracticeLabel = "";
+    var currentStageLabel = "";
+    var currentActionLabel = "";
 
     /**
      * Implementations of interface Locution require rawText and a
@@ -94,13 +100,17 @@ module AUNLG {
      */
     class CharacterValueLocution implements Locution {
         rawText:string;  // The key whose value wil be extracted by renderText.
+        charDataLabel:string;
+        role:string;
         constructor(pCharacterKey:string) {
             // By convention, only a single element in locution data.
-            this.rawText = parseLocutionData(pCharacterKey, dataDelimiter)[0];
+            this.rawText = pCharacterKey;
+            this.role = parseLocutionData(pCharacterKey, dataDelimiter)[0];
+            this.charDataLabel = parseLocutionData(pCharacterKey, dataDelimiter)[1];
         }
         renderText(pCharacterRole:string, pBindings:any) {
-            var characterData = getCharacterData(pCharacterRole, pBindings);
-            var value = characterData[this.rawText];
+            var characterData = getCharacterData(this.role, pBindings);
+            var value = characterData[this.charDataLabel];
             return typeof(value) !== "undefined" ? value : "";
         }
     }
@@ -115,8 +125,8 @@ module AUNLG {
      * renderText
      *      Takes a characterRole string, which is used as the key to obtain the character
      *      name from the bindings.  The appropriate string is returned based on the character's
-     *      gender preference.
-     *      ** If the character has a non-binary gender preference and a non-binary string
+     *      gender identity.
+     *      ** If the character has a non-binary gender identity and a non-binary string
      *      is not passed in during instantiation, an empty string is returned. **
      *
      * Example raw dialogue strings that will create instances of GenderedLocution:
@@ -142,10 +152,10 @@ module AUNLG {
         }
         renderText(pCharacterRole:string, pBindings:any) {
             var characterData = getCharacterData(pCharacterRole, pBindings);
-            // Return the choice based on the preferredGender of speakerRole.
-            return characterData.preferredGender === "male"
+            // Return the choice based on the genderIdentity of speakerRole.
+            return characterData.genderIdentity === "male"
                 ? this.maleChoice
-                : characterData.preferredGender === "female"
+                : characterData.genderIdentity === "female"
                     ? this.femaleChoice
                     : this.nonBinaryChoice;
         }
@@ -179,6 +189,66 @@ module AUNLG {
         }
     }
 
+    /**
+     * constructor
+     *      Takes a raw string (surrounded by parentheses) that is parsed
+     *      into an array containing the ordered list of the text that should
+     *      be shown.
+     *
+     * renderText
+     *      returns the nth line from the choices array, where n is the number
+     *      of times x has communicated with y. If the number of interactions
+     *      is greater than the number of choices, it loops.
+     *
+     * Example dialogue strings that will create instances of
+     * RepeatVariationLocution:
+     *      "This is %repeatVariation(wicked, wretched, awesome)%!"
+     *      "That's so %repeatVariation(frustrating, aggravating, bonkers)%!"
+     *
+     * Note: This introduces a dependency in practiceManager, because it is
+     *      going to rely on practiceManager keeping track of how many times
+     *      an interaction has happened between two characters.
+     */
+    class RepeatVariationLocution implements Locution {
+        choices:Array<string> = [];       // Parsed choices as string values.
+        rawText:string;           // This instance's string value.
+
+        constructor(pRawDialogue:string) {
+            this.rawText = pRawDialogue;
+            this.choices = parseLocutionData(pRawDialogue, dataDelimiter);
+        }
+        // Parameters are not required for function RandomLuction.renderText
+        renderText(pCharacterRole:string = undefined, pBindings:any = undefined) {
+            var recordIndex = pBindings.x + "-" + pBindings.y + "-" + currentPracticeLabel + "-" + currentStageLabel + "-" + currentActionLabel;
+            var index:number = 0;
+            if (practiceRecord[recordIndex] !== undefined) {
+               index = practiceRecord[recordIndex] % this.choices.length;
+            }
+            return this.choices[index];
+        }
+    }
+    export function updatePracticeRecord(recordIndex:string):void {
+      if (practiceRecord[recordIndex] === undefined) {
+          practiceRecord[recordIndex] = 0;
+      } else {
+          practiceRecord[recordIndex] += 1;
+      }
+    }
+    //This function is used for the repeat variation tag and
+    export function decrementPracticeRecord(recordIndex:string):void {
+      if (practiceRecord[recordIndex] !== undefined) {
+         if (practiceRecord[recordIndex] <= 0) {
+             practiceRecord[recordIndex] = undefined;
+         } else {
+             practiceRecord[recordIndex] -= 1;
+         }
+      }
+    }
+    export function setCurrentPracticeStateInfo(plabel:string, slabel:string, alabel:string):void {
+      currentPracticeLabel = plabel;
+      currentStageLabel = slabel;
+      currentActionLabel = alabel;
+    }
 
     /**
      * Constructor
@@ -229,7 +299,12 @@ module AUNLG {
     function getCharacterData(pCharacterRole, pBindings) {
         var cast:any = cif.getCharactersWithMetadata();
         var characterName:string = pBindings[pCharacterRole];
-        return cast[characterName];
+        for (var character of cast) {
+           if (character.name === characterName) {
+             return character;
+          }
+        }
+        return undefined;
     }
 
 
@@ -344,17 +419,19 @@ module AUNLG {
             }
             // Find out which Locution type we are making.
             // indexOf items must be entirely lowercase.
-            pToken = pToken.toLowerCase();
+            // pToken = pToken.toLowerCase();
             if (pToken.indexOf("random") === 0) {
                 return new RandomLocution(trimType(pToken, "random"));
+             } else if (pToken.indexOf("repeatVariation") === 0) {
+                return new RepeatVariationLocution(trimType(pToken, "repeatVariation"));
             } else if (pToken.indexOf("specialized") === 0) {
                 return new SpecializedLocution(trimType(pToken, "specialized"));
             } else if (pToken.indexOf("gendered") === 0) {
                 return new GenderedLocution(trimType(pToken, "gendered"));
-            } else if (pToken.indexOf("charactervalue") === 0) {
+            } else if (pToken.indexOf("characterValue") === 0) {
                 return new CharacterValueLocution(trimType(pToken, "characterValue"));
             // Shorthand for CharacterValueLocution.
-            } else if (pToken.indexOf("charval") === 0) {
+         } else if (pToken.indexOf("charVal") === 0) {
                 return new CharacterValueLocution(trimType(pToken, "charVal"));
             // For CharacterLocutions, check if x, y, or z is the first character of the token.
             } else if (["x", "y", "z"].indexOf(pToken.charAt(0)) >= 0) {

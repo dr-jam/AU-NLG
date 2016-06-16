@@ -23,6 +23,7 @@
         "AUNLG.ts",
         "LocutionTester.ts",
         "typings/cif/CiF.d.ts",
+        "typings/practiceManager/PracticeManager.d.ts",
         "typings/requirejs/require.d.ts"
     ],
     "atom": {
