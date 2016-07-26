@@ -58,7 +58,7 @@ define(["require", "exports", 'cif'], function (require, exports, cif) {
                 this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
             }
             GenderedLocution.prototype.renderText = function (pCharacterRole, pBindings) {
-                var characterData = getCharacterData(pCharacterRole, pBindings);
+                var characterData = getCharacterData("y", pBindings);
                 return characterData.genderIdentity === "male"
                     ? this.maleChoice
                     : characterData.genderIdentity === "female"

@@ -151,7 +151,8 @@ module AUNLG {
             this.nonBinaryChoice = splitChoices.length === 3 ? splitChoices[2] : "";
         }
         renderText(pCharacterRole:string, pBindings:any) {
-            var characterData = getCharacterData(pCharacterRole, pBindings);
+            //NOTE: This is a work around to make it so that it will always return the gendered work for the responding character ('y')
+            var characterData = getCharacterData("y", pBindings);
             // Return the choice based on the genderIdentity of speakerRole.
             return characterData.genderIdentity === "male"
                 ? this.maleChoice
